@@ -135,7 +135,7 @@ public class MainWindow implements ActionListener {
     panel.add(searchButton, gbc);
 
     // Final Row
-    toggleButton = new JToggleButton("Show only Low Stock");
+    toggleButton = new JCheckBox("Show only Low Stock");
     toggleButton.addActionListener(this);
     gbc.gridx = 0;
     gbc.gridy = 4;
