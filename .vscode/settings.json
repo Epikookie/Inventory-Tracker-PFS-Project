@@ -1,6 +1,9 @@
 {
+    "java.project.sourcePaths": [
+        "GUI Files"
+    ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "java/lib/sqlite-jdbc-3.42.0.0.jar"
+        "/lib/sqlite-jdbc-3.42.0.0.jar"
     ]
 }

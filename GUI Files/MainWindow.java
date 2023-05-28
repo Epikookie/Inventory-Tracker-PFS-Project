@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
+
 import javax.swing.*;
 
 public class MainWindow implements ActionListener {
@@ -15,6 +17,7 @@ public class MainWindow implements ActionListener {
   private JToggleButton toggleButton;
   private JScrollPane tableScrollPane;
   private JTable table;
+  private GridBagConstraints gbc = new GridBagConstraints();
 
   public MainWindow() {
     createWindow();
@@ -48,11 +51,18 @@ public class MainWindow implements ActionListener {
         new Login();
         frame.dispose();
         break;
+      case "Search":
+        System.out.println(Operation);
+        AppFunc test = new AppFunc();
+        JTable newTable = test.allInventory();
+        tableScrollPane.setViewportView(newTable);
+        tableScrollPane.repaint();
+        tableScrollPane.revalidate();
+        break;
     }
   }
 
   private void addComponents() {
-    GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
 
     // First Row
