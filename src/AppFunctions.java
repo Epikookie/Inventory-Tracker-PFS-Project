@@ -39,7 +39,7 @@ public class AppFunctions {
                 }
 
                 // create database connection
-                conn = DriverManager.getConnection("jdbc:sqlite:java/lib/" + databaseName + ".db", null, null);
+                conn = DriverManager.getConnection("jdbc:sqlite:lib/" + databaseName + ".db", null, null);
                 stmt = conn.createStatement();
                 System.out.println("Connection to local SQLite database file has been established.");
 
@@ -203,6 +203,44 @@ public class AppFunctions {
         }
     }
 
+    public JTable allInventory() {
+        String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
+        Object[][] data = new Object[1][5];
+
+        try {
+            data = queryInventory(data, 0);
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+
+        return new JTable(data, col);
+    }
+
+    private Object[][] queryInventory(Object[][] data, Integer row) throws SQLException {
+        // get inventory details from database
+        rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
+        rs.next();
+        data[row][0] = rs.getInt(1);
+        for (int i = 1; i <= 4; i++) {
+            data[row][i] = rs.getString(i + 1);
+            System.out.println(i);
+        }
+        return data;
+    }
+
+    private Object[][] querySupplier(Object[][] data, Integer row) throws SQLException {
+        // get inventory details from database
+        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;"); // add inventory details to data
+        rs.next();
+        data[row][0] = rs.getInt(1);
+        for (int i = 1; i <= 4; i++) {
+            data[row][i] = rs.getString(i + 1);
+            System.out.println(i);
+        }
+        return data;
+    }
+
+    // !Old queries
     // ----------------------------------------------------------------------------------------------------
 
     /**

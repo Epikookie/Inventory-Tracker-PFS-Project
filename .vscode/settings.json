@@ -1,6 +1,7 @@
 {
     "java.project.sourcePaths": [
-        "GUI Files"
+        "GUI Files",
+        "src"
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
