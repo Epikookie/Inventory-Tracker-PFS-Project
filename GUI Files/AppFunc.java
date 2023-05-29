@@ -90,7 +90,7 @@ public class AppFunc {
 
     public JTable allInventory() {
         String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
-        Object[][] data = new Object[1][4];
+        Object[][] data = new Object[1][5];
 
         try {
             data = queryInventory(data, 0);
@@ -106,8 +106,21 @@ public class AppFunc {
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
         rs.next();
         data[row][0] = rs.getInt(1);
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 4; i++) {
             data[row][i] = rs.getString(i + 1);
+            System.out.println(i);
+        }
+        return data;
+    }
+
+    private Object[][] querySupplier(Object[][] data, Integer row) throws SQLException {
+        // get inventory details from database
+        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;"); // add inventory details to data
+        rs.next();
+        data[row][0] = rs.getInt(1);
+        for (int i = 1; i <= 4; i++) {
+            data[row][i] = rs.getString(i + 1);
+            System.out.println(i);
         }
         return data;
     }
