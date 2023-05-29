@@ -380,6 +380,40 @@ public class AppFunctions {
     }
 
     /**
+     * Adds an item to the inventory of a certain store
+     * 
+     * @param supplier
+     */
+    public void addInventory(int itemid, int storeid, int inStock, int lowNum) {
+        try {
+            stmt.executeUpdate("INSERT INTO inventory(itemid, storeid, instock, lownum) " +
+                    "VALUES (\'" + itemid + "', '" + storeid + "', '" + inStock + "', '" + lowNum +
+                    "\');");
+            System.out.println("Added " + inStock + " itemid " + itemid + " to store " + storeid);
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+    }
+
+    /**
+     * Adds an item to the item table
+     * 
+     * @param supplier
+     */
+    public void addItem(int supplier, String itemName, String itemSummary) {
+        try {
+            stmt.executeUpdate("INSERT INTO item(supplierid, name, summary) " +
+                    "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary +
+                    "\');");
+            System.out.println("Item " + itemName + " added");
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+    }
+
+    /**
      * Adds a supplier
      * 
      * @param supplierName
