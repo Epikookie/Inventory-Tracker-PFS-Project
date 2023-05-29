@@ -10,7 +10,7 @@ public class Login implements ActionListener {
   /**
    * Border constants for GUI panel
    */
-  private int dimensionX = 500, dimensionY = 500;
+  private int dimensionX = 400, dimensionY = 250;
   private static int TOP = 10, BOTTOM = 10, LEFT = 10, RIGHT = 10;
   private JFrame frame;
   private JPanel panel;
@@ -21,17 +21,16 @@ public class Login implements ActionListener {
   private JPasswordField passwordInput;
   private JButton buttonOne;
 
-
   /**
-   * Constructor, initilaises frame and panel objects
+   * Constructor, initializes frame and panel objects
    */
   public Login() {
-    // Initilaise Main Window
+    // Initialize Main Window
     Window();
   }
 
   public static void main(String[] args) {
-    new Login();
+    SwingUtilities.invokeLater(() -> new Login());
   }
 
   @Override
@@ -39,9 +38,9 @@ public class Login implements ActionListener {
     String teacherID = userInput.getText();
     String password = String.valueOf(passwordInput.getPassword());
     if (teacherID.equals("root") && password.equals("toor")) {
-      labelThree.setText("Login sucessful. Loading...");
+      labelThree.setText("Login successful. Loading...");
+      new MainWindow();
       frame.dispose();
-      new MainMenu();
     } else {
       labelThree.setText("ID or Password is incorrect");
     }
@@ -50,15 +49,17 @@ public class Login implements ActionListener {
   public void Window() {
     frame = new JFrame();
     panel = new JPanel(new GridBagLayout());
-    //First Column
 
+    // First Column
     gbc.anchor = GridBagConstraints.LINE_END;
+    gbc.insets = new Insets(5, 5, 5, 5); // Add padding
     gbc.gridx = 0;
     gbc.gridy = 0;
-    gbc.weightx = 0.25; //How much space allocated to the cell
-    gbc.weighty = 0.25;
+    gbc.weightx = 0.0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
     // Add Labels
-    labelOne = new JLabel("Teacher ID:");
+    labelOne = new JLabel("ID:");
     panel.add(labelOne, gbc);
 
     gbc.gridx = 0;
@@ -66,39 +67,42 @@ public class Login implements ActionListener {
     labelTwo = new JLabel("Password:");
     panel.add(labelTwo, gbc);
 
-    //Second Column
-
-    // Add input fields
-    gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-    userInput = new JTextField(10);
+    // Second Column
+    gbc.anchor = GridBagConstraints.LINE_START;
     gbc.gridx = 1;
     gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    userInput = new JTextField(10);
     panel.add(userInput, gbc);
 
-    passwordInput = new JPasswordField(10);
     gbc.gridx = 1;
     gbc.gridy = 1;
+    passwordInput = new JPasswordField(10);
     panel.add(passwordInput, gbc);
 
-    //Final Row
-    gbc.weighty = 5;
+    // Final Row
+    gbc.weighty = 1.0;
     gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-    buttonOne = new JButton("Sign In");
     gbc.gridx = 1;
     gbc.gridy = 2;
+    gbc.fill = GridBagConstraints.NONE;
+    buttonOne = new JButton("Sign In");
     buttonOne.addActionListener(this);
     panel.add(buttonOne, gbc);
-    gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+
+    gbc.anchor = GridBagConstraints.LINE_START;
     gbc.gridx = 0;
     gbc.gridy = 3;
+    gbc.gridwidth = GridBagConstraints.REMAINDER; // Span across all remaining columns
     labelThree = new JLabel();
     panel.add(labelThree, gbc);
 
-    frame.setSize(dimensionX, dimensionY);
-    frame.add(panel, BorderLayout.CENTER);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setTitle("Authentication");
-    panel.setBorder(BorderFactory.createEmptyBorder(TOP, LEFT, BOTTOM, RIGHT));
+    frame.add(panel, BorderLayout.CENTER);
+    frame.setSize(dimensionX, dimensionY);
+    frame.setLocationRelativeTo(null); // Center the frame on the screen
     frame.setVisible(true);
   }
 }

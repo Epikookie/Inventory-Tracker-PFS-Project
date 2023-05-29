@@ -53,7 +53,7 @@ public class MainWindow implements ActionListener {
         break;
       case "Search":
         System.out.println(Operation);
-        AppFunc test = new AppFunc();
+        AppFunctions test = new AppFunctions();
         JTable newTable = test.allInventory();
         tableScrollPane.setViewportView(newTable);
         tableScrollPane.repaint();
