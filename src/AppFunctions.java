@@ -1,6 +1,11 @@
 import java.sql.*;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 
 public class AppFunctions {
 
@@ -118,7 +123,7 @@ public class AppFunctions {
                     contactName varchar(45) DEFAULT NULL,
                     street varchar(45) DEFAULT NULL,
                     suburb varchar(45) DEFAULT NULL,
-                    state varchar(3) DEFAULT NULL,
+                    state varchar(45) DEFAULT NULL,
                     postcode varchar(10) DEFAULT NULL)
                     """);
 
@@ -132,7 +137,7 @@ public class AppFunctions {
                         manager varchar(45) DEFAULT NULL,
                         street varchar(45) DEFAULT NULL,
                         suburb varchar(45) DEFAULT NULL,
-                        state varchar(3) DEFAULT NULL,
+                        state varchar(45) DEFAULT NULL,
                         postcode varchar(10) DEFAULT NULL)
                     """);
 
@@ -146,7 +151,7 @@ public class AppFunctions {
                       email varchar(45) DEFAULT NULL,
                       street varchar(45) DEFAULT NULL,
                       suburb varchar(45) DEFAULT NULL,
-                      state varchar(3) DEFAULT NULL,
+                      state varchar(45) DEFAULT NULL,
                       postcode varchar(10) DEFAULT NULL,
                       passhash varchar(300) DEFAULT NULL,
                       salt varchar(4) DEFAULT NULL,
@@ -187,6 +192,191 @@ public class AppFunctions {
             System.out.println("Error creating tables: " + e.getMessage());
         }
 
+    }
+
+    /**
+     * Generate a SHA-256 hash of the input string
+     * 
+     * Credit to ChatGPT for this method
+     * 
+     * @param input
+     * @return
+     */
+    public static String generateSHA256Hash(String input) {
+        try {
+            // Create MessageDigest instance for SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Apply SHA-256 hash to the input string
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Handle exception if SHA-256 algorithm is not available
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Generate a random 4 character salt to be used for password hashing
+     * 
+     * @return 4 character string
+     */
+    public static String generateSalt() {
+        String SALT_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder salt = new StringBuilder();
+
+        for (int i = 0; i < 4; i++) {
+            int randomIndex = random.nextInt(SALT_CHARACTERS.length());
+            char randomChar = SALT_CHARACTERS.charAt(randomIndex);
+            salt.append(randomChar);
+        }
+
+        return salt.toString();
+    }
+
+    /**
+     * Populate staff table with dummy data
+     */
+    public void populateStaff() {
+
+        String[] firstName = { "John", "Emma", "Michael", "Olivia", "William", "Ava", "James", "Sophia", "Benjamin",
+                "Mia" };
+        String[] lastName = { "Smith", "Johnson", "Brown", "Taylor", "Miller", "Anderson", "Clark", "Wilson", "Lee",
+                "Martin" };
+        String[] street = { "Main", "Oak", "Cedar", "Elm", "Maple", "Pine", "Spruce", "Birch", "Ash", "Willow" };
+        String[] suburb = { "Downtown", "Central", "North", "South", "East", "West", "Hillside", "Riverside",
+                "Sunnyvale", "Greenfield" };
+        String[] state = { "NT", "TAS", "VIC", "SA", "NSW", "QLD", "WA", "ACT", "NSW", "NT" };
+        String[] postcode = { "0870", "7004", "3001", "5690", "2795", "4737", "6532", "2603", "2648",
+                "0871" };
+        String[] phone = { "(08)83186989", "(07)49044635", "(03)99851311", "(07)45940823", "(03)53356152",
+                "(08)94168098", "(08)90321422", "(07)40279091", "(07)40165282", "(07)45978132" };
+        String email, password, firstDotLast, passhash, salt, rfid;
+        LocalDateTime dateTime;
+
+        try {
+            for (int i = 0; i < 10; i++) {
+
+                firstDotLast = firstName[i].toLowerCase() + "." + lastName[i].toLowerCase();
+                email = firstDotLast + "@gmail.com";
+                password = firstDotLast + state[i] + postcode[i];
+                passhash = generateSHA256Hash(password);
+                rfid = generateSHA256Hash(passhash);
+                salt = generateSalt();
+                dateTime = LocalDateTime.now();
+
+                String query = "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, rfid, lastlogin) "
+                        +
+                        "VALUES ('" + firstName[i] + "', '" + lastName[i] + "', '" + phone[i] + "', '" + email + "', '"
+                        + street[i]
+                        + "', '" + suburb[i] + "', '" + state[i] + "', '" +
+                        postcode[i] + "', '" + passhash + "', '" + salt + "', '" + rfid + "', '" + dateTime + "')";
+
+                stmt.addBatch(query);
+                System.out.println("Staff " + firstName[i] + " " + lastName[i] + " added");
+            }
+
+            System.out.println("attempting to execute batch");
+            stmt.executeBatch();
+            System.out.println("batch executed");
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+    }
+
+    /**
+     * Populate supplier table with dummy data
+     */
+    public void populateSupplier() {
+
+        String[] name = { "ABC Supplier", "DEF Supplier", "GHI Supplier", "JKL Supplier", "MNO Supplier",
+                "PQR Supplier", "STU Supplier", "VWX Supplier", "YZA Supplier",
+                "BCD Supplier" };
+        String[] contact = { "Sally", "Jimmy", "Bryce", "Terry", "Mike", "Ando", "Clarky", "Willy", "Stevo",
+                "Trev" };
+        String[] street = { "Main", "Oak", "Cedar", "Elm", "Maple", "Pine", "Spruce", "Birch", "Ash", "Willow" };
+        String[] suburb = { "Downtown", "Central", "North", "South", "East", "West", "Hillside", "Riverside",
+                "Sunnyvale", "Greenfield" };
+        String[] state = { "NT", "TAS", "VIC", "SA", "NSW", "QLD", "WA", "ACT", "NSW", "NT" };
+        String[] postcode = { "0870", "7004", "3001", "5690", "2795", "4737", "6532", "2603", "2648",
+                "0871" };
+        String[] phone = { "(07)56170183", "(07)40314341", "(03)53567182", "(03)53983663", "(02)40312432",
+                "(03)53124851", "(02)40238930", "(03)53838987", "(07)30860234", "(08)83341006" };
+        String email, nameNoSpace;
+
+        try {
+            for (int i = 0; i < 10; i++) {
+
+                nameNoSpace = name[i].toLowerCase().replace(" ", "_");
+                email = nameNoSpace + "@gmail.com";
+
+                String query = "INSERT INTO supplier (name, phone, email, contactName, street, suburb, state, postcode) "
+                        +
+                        "VALUES ('" + name[i] + "', '" + phone[i] + "', '" + email + "', '" + contact[i] + "', '"
+                        + street[i] + "', '" + suburb[i] + "', '" + state[i] + "', '" + postcode[i] + "')";
+
+                stmt.addBatch(query);
+                System.out.println("Supplier " + name[i] + " added");
+            }
+
+            System.out.println("attempting to execute batch");
+            stmt.executeBatch();
+            System.out.println("batch executed");
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+    }
+
+    /**
+     * Populate supplier table with dummy data
+     */
+    public void populateStore() {
+
+        String[] name = { "GST Stronghold", "Sorry Everyone", "Knives Out", "Grey Brigade", "Budgies-R-Us" };
+        String[] manager = { "John", "Kevin", "Julia", "Malcom", "Tony" };
+        String[] street = { "Main", "Oak", "Cedar", "Elm", "Maple" };
+        String[] suburb = { "Downtown", "Central", "North", "South", "East" };
+        String[] state = { "NT", "TAS", "VIC", "SA", "NSW" };
+        String[] postcode = { "0870", "7004", "3001", "5690", "2795" };
+        String[] phone = { "(07)56170183", "(07)40314341", "(03)53567182", "(03)53983663", "(02)40312432" };
+        String email, nameNoSpace;
+
+        try {
+            for (int i = 0; i < 5; i++) {
+
+                nameNoSpace = name[i].toLowerCase().replace(" ", "_");
+                email = nameNoSpace + "@gmail.com";
+
+                String query = "INSERT INTO store (name, phone, email, manager, street, suburb, state, postcode) "
+                        +
+                        "VALUES ('" + name[i] + "', '" + phone[i] + "', '" + email + "', '" + manager[i] + "', '"
+                        + street[i] + "', '" + suburb[i] + "', '" + state[i] + "', '" + postcode[i] + "')";
+
+                stmt.addBatch(query);
+                System.out.println("Store " + name[i] + " added");
+            }
+
+            System.out.println("attempting to execute batch");
+            stmt.executeBatch();
+            System.out.println("batch executed");
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
     }
 
     /**
