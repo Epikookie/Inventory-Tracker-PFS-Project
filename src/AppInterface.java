@@ -6,7 +6,7 @@ public class AppInterface {
         func = new AppFunctions();
         func.initialiseDatabase(true);
         func.addSupplier("ABC Store");
-
+        Security security = new Security();
         // func.addClass(1, "23/05/2022", null, 1, null);
 
         // new Login();

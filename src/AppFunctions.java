@@ -149,7 +149,9 @@ public class AppFunctions {
                       state varchar(3) DEFAULT NULL,
                       postcode varchar(10) DEFAULT NULL,
                       passhash varchar(300) DEFAULT NULL,
-                      rfid varchar(300) DEFAULT NULL)
+                      salt varchar(4) DEFAULT NULL,
+                      rfid varchar(300) DEFAULT NULL,
+                      lastlogin datetime DEFAULT NULL)
                     """);
 
             // Batch item table creation
