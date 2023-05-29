@@ -82,7 +82,7 @@ public class MainWindow implements ActionListener {
     panel.add(signOutButton, gbc);
 
     // Second Row
-    JLabel label1 = new JLabel("Label 1:");
+    JLabel label1 = new JLabel("Item Name:");
     gbc.gridx = 0;
     gbc.gridy = 1;
     gbc.gridwidth = 2;
@@ -101,7 +101,7 @@ public class MainWindow implements ActionListener {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     panel.add(textField1, gbc);
 
-    JLabel label2 = new JLabel("Label 2:");
+    JLabel label2 = new JLabel("Store Name:");
     gbc.gridx = 0;
     gbc.gridy = 2;
     gbc.gridwidth = 2;
@@ -118,7 +118,7 @@ public class MainWindow implements ActionListener {
     gbc.anchor = GridBagConstraints.WEST;
     panel.add(textField2, gbc);
 
-    JLabel label3 = new JLabel("Label 3:");
+    JLabel label3 = new JLabel("Supplier Name:");
     gbc.gridx = 0;
     gbc.gridy = 3;
     gbc.gridwidth = 2;
