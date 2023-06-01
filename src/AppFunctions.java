@@ -446,40 +446,67 @@ public class AppFunctions {
         // get inventory details from database
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
 
-        data[row][0] = rs.getInt(1);
-        // 4 refers to number of columns in inventory table
-        for (int i = 1; i < 4; i++) {
-            data[row][i] = rs.getString(i + 1);
-            rs.next();
-            System.out.println(i);
+        // Determine the number of rows in the ResultSet
+        int rowCount = 0;
+        while (rs.next()) {
+            rowCount++;
         }
+        // Reset the ResultSet to the start
+        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;");
+        // Resize the data array to accommodate all the records
+        data = new Object[rowCount][9];
+        int currentRow = 0;
+        while (rs.next()) {
+            for (int i = 1; i < 9; i++) {
+                data[currentRow][i] = rs.getString(i + 1);
+                System.out.println(i);
+            }
+            currentRow++;
+        }
+
         return data;
+
     }
 
     public JTable allSuppliers() {
         String[] col = { "Supplier ID", "Supplier Name", "Phone", "Email", "Contact Name", "Street", "Suburb", "State",
                 "Postcode" };
-        Object[][] data = new Object[0][9];
+        Object[][] data = {};
         try {
-            data = querySupplier(data, 100);
+            data = querySupplier();
         } catch (SQLException e) {
             System.err.print(e.getMessage());
         }
         return new JTable(data, col);
     }
 
-    private Object[][] querySupplier(Object[][] data, Integer row) throws SQLException {
+    private Object[][] querySupplier() throws SQLException {
         // get inventory details from database
-        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;"); // add inventory details to data
+        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;");
 
-        data[row][0] = rs.getInt(9);
-        for (int i = 1; i < 9; i++) {
-            rs.next();
-            System.out.println(i);
-            data[row][i] = rs.getString(i + 1);
+        // Determine the number of rows in the ResultSet
+        int rowCount = 0;
+        while (rs.next()) {
+            rowCount++;
         }
+        // Reset the ResultSet to the start
+        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;");
+        // Resize the data array to accommodate all the records
+        Object[][] data = new Object[rowCount][9];
+        int currentRow = 0;
+        while (rs.next()) {
+            for (int i = 1; i < 9; i++) {
+                data[currentRow][i] = rs.getString(i + 1);
+                System.out.println(i);
+            }
+            currentRow++;
+        }
+
         return data;
     }
+
+
+    
 
     // !Old queries
     // ----------------------------------------------------------------------------------------------------
