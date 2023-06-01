@@ -21,7 +21,7 @@ public class AppInterface {
 
         // func.addClass(1, "23/05/2022", null, 1, null);
 
-        // new Login();
+        new Login();
     }
 
 }

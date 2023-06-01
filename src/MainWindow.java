@@ -10,16 +10,18 @@ public class MainWindow implements ActionListener {
   private JPanel panel;
   private JButton scanInOutButton;
   private JButton signOutButton;
-  private JTextField textField1;
-  private JTextField textField2;
-  private JTextField textField3;
+  private JTextField itemField;
+  private JTextField storeField;
+  private JTextField supplierField;
   private JButton searchButton;
   private JToggleButton toggleButton;
   private JScrollPane tableScrollPane;
   private JTable table;
   private GridBagConstraints gbc = new GridBagConstraints();
+  private AppFunctions func = new AppFunctions();
 
-  public MainWindow() {
+  public MainWindow(AppFunctions func) {
+    this.func = func;
     createWindow();
     addComponents();
     frame.setVisible(true);
@@ -42,24 +44,34 @@ public class MainWindow implements ActionListener {
     switch (Operation) {
       case "Scan In/Out":
         System.out.println(Operation);
-
-        new ScanInOut();
+        new ScanInOut(func);
         frame.dispose();
         break;
       case "Sign Out":
         System.out.println(Operation);
-        new Login();
+        new Login(func);
         frame.dispose();
         break;
       case "Search":
         System.out.println(Operation);
-        AppFunctions test = new AppFunctions();
-        JTable newTable = test.allInventory();
-        tableScrollPane.setViewportView(newTable);
+        runQuery();
+        JTable resultTable = runQuery();
+        tableScrollPane.setViewportView(resultTable);
         tableScrollPane.repaint();
         tableScrollPane.revalidate();
         break;
     }
+  }
+
+  private JTable runQuery() {
+    JTable table = func.allInventory();
+    String itemString = itemField.getText();
+    String storeString = storeField.getText();
+    String supplierString = supplierField.getText();
+    boolean lowStock = toggleButton.isSelected();
+
+    return table;
+
   }
 
   private void addComponents() {
@@ -92,14 +104,14 @@ public class MainWindow implements ActionListener {
 
     panel.add(label1, gbc);
 
-    textField1 = new JTextField(50);
+    itemField = new JTextField(50);
     gbc.gridx = 1;
     gbc.gridy = 1;
     gbc.gridwidth = 2;
 
     gbc.anchor = GridBagConstraints.WEST;
     gbc.fill = GridBagConstraints.HORIZONTAL;
-    panel.add(textField1, gbc);
+    panel.add(itemField, gbc);
 
     JLabel label2 = new JLabel("Store Name:");
     gbc.gridx = 0;
@@ -110,13 +122,13 @@ public class MainWindow implements ActionListener {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     panel.add(label2, gbc);
 
-    textField2 = new JTextField(50);
+    storeField = new JTextField(50);
     gbc.gridx = 1;
     gbc.gridy = 2;
     gbc.gridwidth = 2;
 
     gbc.anchor = GridBagConstraints.WEST;
-    panel.add(textField2, gbc);
+    panel.add(storeField, gbc);
 
     JLabel label3 = new JLabel("Supplier Name:");
     gbc.gridx = 0;
@@ -127,13 +139,13 @@ public class MainWindow implements ActionListener {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     panel.add(label3, gbc);
 
-    textField3 = new JTextField(50);
+    supplierField = new JTextField(50);
     gbc.gridx = 1;
     gbc.gridy = 3;
     gbc.gridwidth = 2;
 
     gbc.anchor = GridBagConstraints.WEST;
-    panel.add(textField3, gbc);
+    panel.add(supplierField, gbc);
 
     searchButton = new JButton("Search");
     searchButton.addActionListener(this);
@@ -178,6 +190,10 @@ public class MainWindow implements ActionListener {
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(MainWindow::new);
+    AppFunctions func = new AppFunctions();
+    SwingUtilities.invokeLater(() -> {
+      new MainWindow(func);
+    });
+
   }
 }

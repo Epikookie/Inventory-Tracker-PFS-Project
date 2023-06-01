@@ -20,17 +20,22 @@ public class Login implements ActionListener {
   private JTextField userInput;
   private JPasswordField passwordInput;
   private JButton buttonOne;
+  private AppFunctions func;
 
   /**
    * Constructor, initializes frame and panel objects
    */
-  public Login() {
+  public Login(AppFunctions func) {
     // Initialize Main Window
+    this.func = func;
     Window();
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> new Login());
+    AppFunctions func = new AppFunctions();
+    SwingUtilities.invokeLater(() -> {
+      new Login(func);
+    });
   }
 
   @Override
@@ -39,7 +44,7 @@ public class Login implements ActionListener {
     String password = String.valueOf(passwordInput.getPassword());
     if (teacherID.equals("root") && password.equals("toor")) {
       labelThree.setText("Login successful. Loading...");
-      new MainWindow();
+      new MainWindow(func);
       frame.dispose();
     } else {
       labelThree.setText("ID or Password is incorrect");

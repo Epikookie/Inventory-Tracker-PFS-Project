@@ -15,19 +15,25 @@ public class ScanInOut implements ActionListener {
   private JTextField storeInput;
   private JButton buttonOne;
   private JButton backButton; // Added back button
+  private AppFunctions func;
 
-  public ScanInOut() {
+  public ScanInOut(AppFunctions func) {
+    this.func = func;
     Window();
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> new ScanInOut());
+    AppFunctions func = new AppFunctions();
+    SwingUtilities.invokeLater(() -> {
+      new ScanInOut(func);
+    });
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    String teacherID = itemInput.getText();
-    String password = String.valueOf(storeInput);
+    String RFID = itemInput.getText();
+    String storeVal = storeInput.getText();
+    String quantityVal = Quantity.getText();
     String Operation = e.getActionCommand();
     switch (Operation) {
       case "Scan In":
@@ -38,16 +44,16 @@ public class ScanInOut implements ActionListener {
         break;
       case "Back": // Handle back button action
         frame.dispose();
-        new MainWindow();
+        new MainWindow(func);
         break;
     }
 
-    if (teacherID.equals("root") && password.equals("toor")) {
-      labelThree.setText("Login successful. Loading...");
+    if (RFID.equals("root")) {
+      labelThree.setText("Scan successful. Loading...");
       frame.dispose();
       // Call your MainMenu() class or code here
     } else {
-      labelThree.setText("ID or Password is incorrect");
+      labelThree.setText("Please check fields");
     }
   }
 

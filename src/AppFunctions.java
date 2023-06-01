@@ -447,7 +447,8 @@ public class AppFunctions {
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
         rs.next();
         data[row][0] = rs.getInt(1);
-        for (int i = 1; i <= 4; i++) {
+        // 4 refers to number of columns in inventory table
+        for (int i = 1; i < 4; i++) {
             data[row][i] = rs.getString(i + 1);
             System.out.println(i);
         }
@@ -459,7 +460,7 @@ public class AppFunctions {
         rs = stmt.executeQuery("SELECT * FROM SUPPLIER;"); // add inventory details to data
         rs.next();
         data[row][0] = rs.getInt(1);
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i < 9; i++) {
             data[row][i] = rs.getString(i + 1);
             System.out.println(i);
         }
