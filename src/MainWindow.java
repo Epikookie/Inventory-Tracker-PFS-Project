@@ -55,7 +55,14 @@ public class MainWindow implements ActionListener {
       case "Search":
         System.out.println(Operation);
         runQuery();
-        JTable resultTable = runQuery();
+        JTable resultTable;
+        if (toggleButton.isSelected()) {
+          resultTable = func.allSuppliers();
+        } else {
+          resultTable = runQuery();
+        }
+        int rowCount = resultTable.getRowCount();
+        System.out.println("Number of rows: " + rowCount);
         tableScrollPane.setViewportView(resultTable);
         tableScrollPane.repaint();
         tableScrollPane.revalidate();
@@ -69,7 +76,7 @@ public class MainWindow implements ActionListener {
     String storeString = storeField.getText();
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
-
+    
     return table;
 
   }

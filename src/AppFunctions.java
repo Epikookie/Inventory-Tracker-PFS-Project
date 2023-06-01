@@ -445,24 +445,38 @@ public class AppFunctions {
     private Object[][] queryInventory(Object[][] data, Integer row) throws SQLException {
         // get inventory details from database
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
-        rs.next();
+
         data[row][0] = rs.getInt(1);
         // 4 refers to number of columns in inventory table
         for (int i = 1; i < 4; i++) {
             data[row][i] = rs.getString(i + 1);
+            rs.next();
             System.out.println(i);
         }
         return data;
     }
 
+    public JTable allSuppliers() {
+        String[] col = { "Supplier ID", "Supplier Name", "Phone", "Email", "Contact Name", "Street", "Suburb", "State",
+                "Postcode" };
+        Object[][] data = new Object[0][9];
+        try {
+            data = querySupplier(data, 100);
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+        return new JTable(data, col);
+    }
+
     private Object[][] querySupplier(Object[][] data, Integer row) throws SQLException {
         // get inventory details from database
         rs = stmt.executeQuery("SELECT * FROM SUPPLIER;"); // add inventory details to data
-        rs.next();
-        data[row][0] = rs.getInt(1);
+
+        data[row][0] = rs.getInt(9);
         for (int i = 1; i < 9; i++) {
-            data[row][i] = rs.getString(i + 1);
+            rs.next();
             System.out.println(i);
+            data[row][i] = rs.getString(i + 1);
         }
         return data;
     }
