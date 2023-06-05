@@ -452,13 +452,13 @@ public class AppFunctions {
             rowCount++;
         }
         // Reset the ResultSet to the start
-        rs = stmt.executeQuery("SELECT * FROM SUPPLIER;");
+        rs = stmt.executeQuery("SELECT * FROM INVENTORY;");
         // Resize the data array to accommodate all the records
-        data = new Object[rowCount][9];
+        data = new Object[rowCount][5];
         int currentRow = 0;
         while (rs.next()) {
-            for (int i = 1; i < 9; i++) {
-                data[currentRow][i] = rs.getString(i + 1);
+            for (int i = 1; i <= 4; i++) {
+                data[currentRow][i - 1] = rs.getString(i);
                 System.out.println(i);
             }
             currentRow++;
@@ -495,8 +495,8 @@ public class AppFunctions {
         Object[][] data = new Object[rowCount][9];
         int currentRow = 0;
         while (rs.next()) {
-            for (int i = 1; i < 9; i++) {
-                data[currentRow][i] = rs.getString(i + 1);
+            for (int i = 1; i <= 9; i++) {
+                data[currentRow][i - 1] = rs.getString(i);
                 System.out.println(i);
             }
             currentRow++;
@@ -504,9 +504,6 @@ public class AppFunctions {
 
         return data;
     }
-
-
-    
 
     // !Old queries
     // ----------------------------------------------------------------------------------------------------
