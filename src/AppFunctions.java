@@ -324,6 +324,38 @@ public class AppFunctions {
     }
 
     /**
+     * Populate item table with dummy data
+     */
+    public void populateItems() {
+        addItem(1, "Apple", "This is just an ordinary apple");
+        addItem(2, "Banana", "This is just an ordinary banana");
+        addItem(3, "Cherry", "This is no ordinary cherry");
+        addItem(4, "D fruit", "Delicious fruit");
+        addItem(5, "E fruit", "Energetic fruit");
+        addItem(6, "Grapes", "So grape");
+        addItem(6, "F fruit", "Feelgood fruit");
+        addItem(7, "H fruit", "Healthy fruit");
+        addItem(8, "I fruit", "Interesting fruit");
+        addItem(8, "J fruit", "Just fruit");
+        addItem(9, "Kiwifruit", "NZ fruit");
+        addItem(10, "Lime", "In the coconut fruit");
+        addItem(1, "Mango", "Kramer fruit");
+        addItem(2, "N fruit", "Nice fruit");
+        addItem(3, "Orange", "Colourful fruit.");
+        addItem(4, "Pineapple", "Hawaiian fruit");
+        addItem(5, "Q fruit", "Questionable fruit");
+        addItem(6, "R fruit", "Red fruit");
+        addItem(7, "S fruit", "Succulent fruit");
+        addItem(8, "Tangerine", "Tasty fruit");
+        addItem(8, "Banana", "Longer shelf life");
+        addItem(9, "Banana", "Shorter shelf life");
+        addItem(10, "Apple", "Fuji - seconds");
+        addItem(9, "Apple", "Fuji - Newer Stock");
+        addItem(8, "Apple", "Small Red Delicious");
+        addItem(7, "Apple", "Big Red Delicious");
+    }
+
+    /**
      * Adds an item to the inventory of a certain store
      * 
      * @param supplier
@@ -336,7 +368,63 @@ public class AppFunctions {
             System.out.println("Added " + inStock + " itemid " + itemid + " to store " + storeid);
 
         } catch (SQLException e) {
-            System.err.print(e.getMessage());
+            System.err.println(e.getMessage());
+            System.out.println(
+                    "NOTE: If you are trying to add an item to a store that already has that item, " +
+                            "use resetInventory() to overwrite existing values, or updateInventory() to " +
+                            "modify existing stock on hand");
+        }
+    }
+
+    /**
+     * Overwrites the item inventory of a certain store with new values
+     * 
+     * @param supplier
+     */
+    public void resetInventory(int itemid, int storeid, int inStock, int lowNum) {
+        try {
+            stmt.executeUpdate("UPDATE inventory SET instock = " + inStock + ", lownum = " + lowNum +
+                    " WHERE itemid = " + itemid + " AND storeid = " + storeid + ";");
+            System.out.println("Updated " + inStock + " itemid " + itemid + " to store " + storeid);
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieves the integer value of items in stock for a certain store, then adds
+     * the new value to it. Value can be negative.
+     * 
+     * @param supplier
+     * @param itemName
+     * @param itemSummary
+     */
+    public void adjustInventory(int itemid, int storeid, int inStock) {
+        try {
+            int currentStock = 0, updatedStock = 0;
+            ResultSet rs = stmt.executeQuery("SELECT instock FROM inventory WHERE itemid = " + itemid +
+                    " AND storeid = " + storeid + ";");
+            while (rs.next()) {
+                currentStock = rs.getInt("instock");
+            }
+
+            // Make sure we don't have negative value for instock
+            updatedStock = currentStock + inStock;
+            if (updatedStock < 0) {
+                System.err.println("ERROR: Cannot have negative stock on hand. Only " + currentStock
+                        + " available in storeid " + storeid + ". Aborting.");
+                return;
+            }
+
+            // Update inventory
+            stmt.executeUpdate("UPDATE inventory SET instock = " + updatedStock +
+                    " WHERE itemid = " + itemid + " AND storeid = " + storeid + ";");
+            System.out.println("Adjusted itemid " + itemid + " in store " + storeid + " by " + inStock +
+                    " units. New stock on hand: " + updatedStock);
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 
