@@ -59,13 +59,10 @@ public class MainWindow implements ActionListener {
         if (toggleButton.isSelected()) {
           resultTable = func.allSuppliers();
         } else {
-          resultTable = runQuery();
+          // resultTable = runQuery();
+          resultTable = func.searchInventoryByItem("Apple");
         }
-        int rowCount = resultTable.getRowCount();
-        System.out.println("Number of rows: " + rowCount);
-        tableScrollPane.setViewportView(resultTable);
-        tableScrollPane.repaint();
-        tableScrollPane.revalidate();
+        refreshView(resultTable);
         break;
     }
   }
@@ -76,9 +73,17 @@ public class MainWindow implements ActionListener {
     String storeString = storeField.getText();
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
-    
+
     return table;
 
+  }
+
+  private void refreshView(JTable resultTable) {
+    int rowCount = resultTable.getRowCount();
+    System.out.println("Number of rows: " + rowCount);
+    tableScrollPane.setViewportView(resultTable);
+    tableScrollPane.repaint();
+    tableScrollPane.revalidate();
   }
 
   private void addComponents() {

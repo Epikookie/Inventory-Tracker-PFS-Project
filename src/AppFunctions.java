@@ -374,12 +374,59 @@ public class AppFunctions {
         }
     }
 
+    // -------------------------------------------------------
+    public JTable searchInventoryByItem(String itemName) {
+        // initialise return objects
+        Object[][] data = new Object[0][0];
+        String[] col = { "Item ID", "Store ID", "Quantity", "Name", "Summary" };
+        // Object[][] data = new Object[1][5];
+        String sql = """
+                SELECT *
+                        FROM(
+                            SELECT Inv.itemid, Inv.storeid, Inv.instock, itm.name, itm.summary
+                            FROM Inventory AS Inv, Item AS itm
+                            WHERE Inv.itemid = itm.id
+                            ) as subquery
+                WHERE subquery.name='""";
+        sql = sql + "" + itemName + "\';";
+        System.out.println(sql);
+        try {
+            rs = stmt.executeQuery(sql);
+            int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+            System.out.println("Row" + rowCount);
+            // Reset the ResultSet to the start
+            rs = stmt.executeQuery(sql);
+            // Resize the data array to accommodate all the records
+            data = new Object[rowCount][5];
+            int currentRow = 0;
+            while (rs.next()) {
+                for (int i = 1; i <= 5; i++) {
+                    data[currentRow][i - 1] = rs.getString(i);
+                    System.out.println(i);
+                }
+                currentRow++;
+            }
+
+        } catch (SQLException e) {
+            // print out error
+            System.out.println(e.getMessage());
+        }
+
+        // return filtered results
+        return new JTable(data, col);
+    }
+
+    // ----------------------------------------------------
+
     public JTable allInventory() {
         String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
         Object[][] data = new Object[1][5];
 
         try {
-            data = queryInventory(data, 0);
+            data = queryInventory(data);
         } catch (SQLException e) {
             System.err.print(e.getMessage());
         }
@@ -387,7 +434,7 @@ public class AppFunctions {
         return new JTable(data, col);
     }
 
-    private Object[][] queryInventory(Object[][] data, Integer row) throws SQLException {
+    private Object[][] queryInventory(Object[][] data) throws SQLException {
         // get inventory details from database
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
 
