@@ -408,12 +408,12 @@ public class AppFunctions {
      * Retrieves the integer value of items in stock for a certain store, then adds
      * the new value to it. Value can be negative.
      * 
-     * @param itemid  itemid of item to be added
-     * @param storeid storeid of store to add item to
-     * @param inStock new value of items in stock
+     * @param itemid      itemid of item to be added
+     * @param storeid     storeid of store to add item to
+     * @param adjustStock new value of items in stock
      * @return true if successful, false if not *
      */
-    public boolean adjustInventory(int itemid, int storeid, int inStock) {
+    public boolean adjustInventory(int itemid, int storeid, int adjustStock) {
         try {
             int currentStock = 0, updatedStock = 0;
             ResultSet rs = stmt.executeQuery("SELECT instock FROM inventory WHERE itemid = " + itemid +
@@ -423,7 +423,7 @@ public class AppFunctions {
             }
 
             // Make sure we don't have negative value for instock
-            updatedStock = currentStock + inStock;
+            updatedStock = currentStock + adjustStock;
             if (updatedStock < 0) {
                 System.err.println("ERROR: Cannot have negative stock on hand. Only " + currentStock
                         + " available in storeid " + storeid + ". Aborting.");
@@ -433,7 +433,7 @@ public class AppFunctions {
             // Update inventory
             stmt.executeUpdate("UPDATE inventory SET instock = " + updatedStock +
                     " WHERE itemid = " + itemid + " AND storeid = " + storeid + ";");
-            System.out.println("Adjusted itemid " + itemid + " in store " + storeid + " by " + inStock +
+            System.out.println("Adjusted itemid " + itemid + " in store " + storeid + " by " + adjustStock +
                     " units. New stock on hand: " + updatedStock);
             return true;
 

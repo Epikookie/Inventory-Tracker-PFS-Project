@@ -13,7 +13,11 @@ public class AppInterface {
         // Add 10 bananas to inventory in store 3 Knives Out and set low stock to 3
         // bananas
         func.addInventory(1, 1, 5, 3);
-        func.addInventory(1, 1, 5, 3);
+        func.addInventory(1, 1, 5, 3); // should fail as already exists
+        func.resetInventory(1, 1, 10, 2);
+        func.adjustInventory(1, 1, 10);
+        func.adjustInventory(1, 1, -21); // should fail as not enough stock
+        func.adjustInventory(1, 1, -20);
         func.addInventory(2, 3, 10, 6);
         func.addInventory(3, 5, 15, 9);
         func.addInventory(4, 4, 5, 2);
