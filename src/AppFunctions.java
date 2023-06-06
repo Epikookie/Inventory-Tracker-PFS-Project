@@ -358,14 +358,19 @@ public class AppFunctions {
     /**
      * Adds an item to the inventory of a certain store
      * 
-     * @param supplier
+     * @param itemid  The itemid of the item to be added
+     * @param storeid The storeid of the store to add the item to
+     * @param inStock The amount of the item to add to the store
+     * @param lowNum  The low number of the item to add to the store
+     * @return True if the item was added successfully, false otherwise
      */
-    public void addInventory(int itemid, int storeid, int inStock, int lowNum) {
+    public boolean addInventory(int itemid, int storeid, int inStock, int lowNum) {
         try {
             stmt.executeUpdate("INSERT INTO inventory(itemid, storeid, instock, lownum) " +
                     "VALUES (\'" + itemid + "', '" + storeid + "', '" + inStock + "', '" + lowNum +
                     "\');");
             System.out.println("Added " + inStock + " itemid " + itemid + " to store " + storeid);
+            return true;
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -373,22 +378,29 @@ public class AppFunctions {
                     "NOTE: If you are trying to add an item to a store that already has that item, " +
                             "use resetInventory() to overwrite existing values, or updateInventory() to " +
                             "modify existing stock on hand");
+            return false;
         }
     }
 
     /**
      * Overwrites the item inventory of a certain store with new values
      * 
-     * @param supplier
+     * @param itemid  itemid of item to be added
+     * @param storeid storeid of store to add item to
+     * @param inStock new value of items in stock
+     * @param lowNum  new value of low stock threshold
+     * @return true if successful, false if not
      */
-    public void resetInventory(int itemid, int storeid, int inStock, int lowNum) {
+    public boolean resetInventory(int itemid, int storeid, int inStock, int lowNum) {
         try {
             stmt.executeUpdate("UPDATE inventory SET instock = " + inStock + ", lownum = " + lowNum +
                     " WHERE itemid = " + itemid + " AND storeid = " + storeid + ";");
             System.out.println("Updated " + inStock + " itemid " + itemid + " to store " + storeid);
+            return true;
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            return false;
         }
     }
 
@@ -396,11 +408,12 @@ public class AppFunctions {
      * Retrieves the integer value of items in stock for a certain store, then adds
      * the new value to it. Value can be negative.
      * 
-     * @param supplier
-     * @param itemName
-     * @param itemSummary
+     * @param itemid  itemid of item to be added
+     * @param storeid storeid of store to add item to
+     * @param inStock new value of items in stock
+     * @return true if successful, false if not *
      */
-    public void adjustInventory(int itemid, int storeid, int inStock) {
+    public boolean adjustInventory(int itemid, int storeid, int inStock) {
         try {
             int currentStock = 0, updatedStock = 0;
             ResultSet rs = stmt.executeQuery("SELECT instock FROM inventory WHERE itemid = " + itemid +
@@ -414,7 +427,7 @@ public class AppFunctions {
             if (updatedStock < 0) {
                 System.err.println("ERROR: Cannot have negative stock on hand. Only " + currentStock
                         + " available in storeid " + storeid + ". Aborting.");
-                return;
+                return false;
             }
 
             // Update inventory
@@ -422,9 +435,11 @@ public class AppFunctions {
                     " WHERE itemid = " + itemid + " AND storeid = " + storeid + ";");
             System.out.println("Adjusted itemid " + itemid + " in store " + storeid + " by " + inStock +
                     " units. New stock on hand: " + updatedStock);
+            return true;
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            return false;
         }
     }
 
@@ -432,16 +447,21 @@ public class AppFunctions {
      * Adds an item to the item table
      * 
      * @param supplier
+     * @param itemName
+     * @param itemSummary
+     * @return true if successful, false if not
      */
-    public void addItem(int supplier, String itemName, String itemSummary) {
+    public boolean addItem(int supplier, String itemName, String itemSummary) {
         try {
             stmt.executeUpdate("INSERT INTO item(supplierid, name, summary) " +
                     "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary +
                     "\');");
             System.out.println("Item " + itemName + " added");
+            return true;
 
         } catch (SQLException e) {
             System.err.print(e.getMessage());
+            return false;
         }
     }
 
@@ -449,15 +469,18 @@ public class AppFunctions {
      * Adds a supplier
      * 
      * @param supplierName
+     * @return true if successful, false if not
      */
-    public void addSupplier(String supplierName) {
+    public boolean addSupplier(String supplierName) {
         try {
             stmt.executeUpdate("INSERT INTO supplier(name) " +
                     "VALUES (\'" + supplierName + "\');");
             System.out.println("Supplier " + supplierName + " added");
+            return true;
 
         } catch (SQLException e) {
             System.err.print(e.getMessage());
+            return false;
         }
     }
 
