@@ -495,8 +495,13 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE itm.name = ?;
+                WHERE itm.name = ?
                 """;
+        if (lowStock) {
+            sql += " AND Inv.instock < Inv.lownum;";
+        } else {
+            sql += ";";
+        }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, itemName);
@@ -539,8 +544,14 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE S.name = ?;
+                WHERE S.name = ?
                 """;
+
+        if (lowStock) {
+            sql += " AND Inv.instock < Inv.lownum;";
+        } else {
+            sql += ";";
+        }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, storeName);
@@ -583,8 +594,13 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE Sup.name = ?;
+                WHERE Sup.name = ?
                 """;
+        if (lowStock) {
+            sql += " AND Inv.instock < Inv.lownum;";
+        } else {
+            sql += ";";
+        }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, supName);
