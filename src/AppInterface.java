@@ -17,8 +17,9 @@ public class AppInterface {
 
         // Add 10 bananas to inventory in store 3 Knives Out and set low stock to 3
         // bananas
-        func.addInventory(2, 3, 10, 3);
-
+        func.addInventory(1, 1, 5, 3);
+        func.addInventory(2, 3, 10, 6);
+        func.addInventory(3, 5, 15, 9);
         // func.addClass(1, "23/05/2022", null, 1, null);
 
         new Login(func);

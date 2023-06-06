@@ -374,12 +374,37 @@ public class AppFunctions {
         }
     }
 
+    // -------------------------------------------------------
+    public JTable searchInventoryByItem(String itemName) {
+        // initialise return objects
+        String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
+        Object[][] data = new Object[1][5];
+        String sql = """
+        SELECT * FROM (SELECT * FROM INVENTORY as inv) 
+        WHERE inv.
+
+
+                """;
+
+        try {
+            data = queryInventory(data);
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+        }
+
+        // return student information
+        return new JTable(data, col);
+    }
+
+    // ----------------------------------------------------
+
     public JTable allInventory() {
         String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
         Object[][] data = new Object[1][5];
 
         try {
-            data = queryInventory(data, 0);
+            data = queryInventory(data);
         } catch (SQLException e) {
             System.err.print(e.getMessage());
         }
@@ -387,7 +412,7 @@ public class AppFunctions {
         return new JTable(data, col);
     }
 
-    private Object[][] queryInventory(Object[][] data, Integer row) throws SQLException {
+    private Object[][] queryInventory(Object[][] data) throws SQLException {
         // get inventory details from database
         rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
 
