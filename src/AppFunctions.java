@@ -614,12 +614,12 @@ public class AppFunctions {
 
     // ----------------------------------------------------
 
-    public JTable allInventory() {
+    public JTable allInventory(boolean lowStock) {
         String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
         Object[][] data = new Object[1][col.length];
 
         try {
-            data = queryInventory(data);
+            data = queryInventory(data,lowStock);
         } catch (SQLException e) {
             System.err.print(e.getMessage());
         }
@@ -627,7 +627,7 @@ public class AppFunctions {
         return new JTable(data, col);
     }
 
-    private Object[][] queryInventory(Object[][] data) throws SQLException {
+    private Object[][] queryInventory(Object[][] data, boolean lowStock) throws SQLException {
         // get inventory details from database
         String sql = """
                 SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
@@ -636,6 +636,13 @@ public class AppFunctions {
                     JOIN Store AS S ON Inv.storeid = S.id
                     JOIN Supplier AS Sup ON itm.supplierid = Sup.id
                     """;
+
+        if (lowStock) {
+            sql += "WHERE Inv.instock < Inv.lownum;";
+        } else {
+            sql += ";";
+        }
+
         rs = stmt.executeQuery(sql); // add inventory details to data
 
         // Determine the number of rows in the ResultSet
