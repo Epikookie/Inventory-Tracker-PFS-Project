@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class MainWindow implements ActionListener {
   private JFrame frame;
@@ -74,7 +75,7 @@ public class MainWindow implements ActionListener {
       return func.searchInventoryBySupplier(supplierString,lowStock);
     }
 
-    return func.allInventory();
+    return func.allInventory(lowStock);
 
   }
 
@@ -179,19 +180,7 @@ public class MainWindow implements ActionListener {
     panel.add(toggleButton, gbc);
 
     // Table
-
-    String[] columnNames = { "Column 1", "Column 2", "Column 3", "Column 4", "Column 5", "Column 6", "Column 7",
-        "Column 8" };
-    Object[][] data = new Object[50][8];
-
-    for (int i = 0; i < 50; i++) {
-      for (int j = 0; j < 8; j++) {
-        data[i][j] = "Data " + (i * 8 + j + 1);
-      }
-    }
-
-    table = new JTable(data, columnNames);
-    tableScrollPane = new JScrollPane(table);
+      tableScrollPane = new JScrollPane(table);
     gbc.gridx = 0;
     gbc.gridy = 10;
     gbc.gridwidth = 3;
