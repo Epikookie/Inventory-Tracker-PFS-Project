@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Set;
 
 import javax.swing.*;
 
@@ -54,27 +53,28 @@ public class MainWindow implements ActionListener {
         break;
       case "Search":
         System.out.println(Operation);
-        runQuery();
         JTable resultTable;
-        if (toggleButton.isSelected()) {
-          resultTable = func.allSuppliers();
-        } else {
-          // resultTable = runQuery();
-          resultTable = func.searchInventoryByItem("Apple");
-        }
+        resultTable = runQuery();
         refreshView(resultTable);
         break;
     }
   }
 
   private JTable runQuery() {
-    JTable table = func.allInventory();
     String itemString = itemField.getText();
     String storeString = storeField.getText();
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
 
-    return table;
+    if (!itemString.isBlank()) {
+      return func.searchInventoryByItem(itemString,lowStock);
+    } else if (!storeString.isBlank()) {
+      return func.searchInventoryByStore(storeString,lowStock);
+    } else if (!supplierString.isBlank()) {
+      return func.searchInventoryBySupplier(supplierString,lowStock);
+    }
+
+    return func.allInventory();
 
   }
 
