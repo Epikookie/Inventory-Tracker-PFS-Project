@@ -462,55 +462,145 @@ public class AppFunctions {
     }
 
     // -------------------------------------------------------
-    public JTable searchInventoryByItem(String itemName) {
-        // initialise return objects
-        Object[][] data = new Object[0][0];
-        String[] col = { "Item ID", "Store ID", "Quantity", "Name", "Summary" };
-        // Object[][] data = new Object[1][5];
+    public JTable searchInventoryByItem(String itemName, boolean lowStock) {
+        Object[][] data;
+        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+
         String sql = """
-                SELECT *
-                        FROM(
-                            SELECT Inv.itemid, Inv.storeid, Inv.instock, itm.name, itm.summary
-                            FROM Inventory AS Inv, Item AS itm
-                            WHERE Inv.itemid = itm.id
-                            ) as subquery
-                WHERE subquery.name='""";
-        sql = sql + "" + itemName + "\';";
-        System.out.println(sql);
-        try {
-            rs = stmt.executeQuery(sql);
+                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                FROM Inventory AS Inv
+                JOIN Item AS itm ON Inv.itemid = itm.id
+                JOIN Store AS S ON Inv.storeid = S.id
+                JOIN Supplier AS Sup ON itm.supplierid = Sup.id
+                WHERE itm.name = ?;
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, itemName);
+            ResultSet rs = stmt.executeQuery();
+
+            // Determine the number of rows in the ResultSet
             int rowCount = 0;
             while (rs.next()) {
                 rowCount++;
             }
-            System.out.println("Row" + rowCount);
+
             // Reset the ResultSet to the start
-            rs = stmt.executeQuery(sql);
+            rs = stmt.executeQuery();
+
             // Resize the data array to accommodate all the records
-            data = new Object[rowCount][5];
+            data = new Object[rowCount][col.length];
+
             int currentRow = 0;
             while (rs.next()) {
-                for (int i = 1; i <= 5; i++) {
+                for (int i = 1; i <= col.length; i++) {
                     data[currentRow][i - 1] = rs.getString(i);
-                    System.out.println(i);
                 }
                 currentRow++;
             }
-
         } catch (SQLException e) {
-            // print out error
             System.out.println(e.getMessage());
+            data = new Object[0][0]; // Return an empty array in case of error
         }
 
-        // return filtered results
         return new JTable(data, col);
     }
+
+    public JTable searchInventoryByStore(String storeName, boolean lowStock) {
+        Object[][] data;
+        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+
+        String sql = """
+                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                FROM Inventory AS Inv
+                JOIN Item AS itm ON Inv.itemid = itm.id
+                JOIN Store AS S ON Inv.storeid = S.id
+                JOIN Supplier AS Sup ON itm.supplierid = Sup.id
+                WHERE S.name = ?;
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, storeName);
+            ResultSet rs = stmt.executeQuery();
+
+            // Determine the number of rows in the ResultSet
+            int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+
+            // Reset the ResultSet to the start
+            rs = stmt.executeQuery();
+
+            // Resize the data array to accommodate all the records
+            data = new Object[rowCount][col.length];
+
+            int currentRow = 0;
+            while (rs.next()) {
+                for (int i = 1; i <= col.length; i++) {
+                    data[currentRow][i - 1] = rs.getString(i);
+                }
+                currentRow++;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            data = new Object[0][0]; // Return an empty array in case of error
+        }
+
+        return new JTable(data, col);
+    }
+
+    public JTable searchInventoryBySupplier(String supName, boolean lowStock) {
+        Object[][] data;
+        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+
+        String sql = """
+                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                FROM Inventory AS Inv
+                JOIN Item AS itm ON Inv.itemid = itm.id
+                JOIN Store AS S ON Inv.storeid = S.id
+                JOIN Supplier AS Sup ON itm.supplierid = Sup.id
+                WHERE Sup.name = ?;
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, supName);
+            ResultSet rs = stmt.executeQuery();
+
+            // Determine the number of rows in the ResultSet
+            int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+
+            // Reset the ResultSet to the start
+            rs = stmt.executeQuery();
+
+            // Resize the data array to accommodate all the records
+            data = new Object[rowCount][col.length];
+
+            int currentRow = 0;
+            while (rs.next()) {
+                for (int i = 1; i <= col.length; i++) {
+                    data[currentRow][i - 1] = rs.getString(i);
+                }
+                currentRow++;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            data = new Object[0][0]; // Return an empty array in case of error
+        }
+
+        return new JTable(data, col);
+    }
+
+    // -----------
 
     // ----------------------------------------------------
 
     public JTable allInventory() {
-        String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
-        Object[][] data = new Object[1][5];
+        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+        Object[][] data = new Object[1][col.length];
 
         try {
             data = queryInventory(data);
@@ -523,7 +613,14 @@ public class AppFunctions {
 
     private Object[][] queryInventory(Object[][] data) throws SQLException {
         // get inventory details from database
-        rs = stmt.executeQuery("SELECT * FROM INVENTORY;"); // add inventory details to data
+        String sql = """
+                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                    FROM Inventory AS Inv
+                    JOIN Item AS itm ON Inv.itemid = itm.id
+                    JOIN Store AS S ON Inv.storeid = S.id
+                    JOIN Supplier AS Sup ON itm.supplierid = Sup.id
+                    """;
+        rs = stmt.executeQuery(sql); // add inventory details to data
 
         // Determine the number of rows in the ResultSet
         int rowCount = 0;
@@ -531,12 +628,12 @@ public class AppFunctions {
             rowCount++;
         }
         // Reset the ResultSet to the start
-        rs = stmt.executeQuery("SELECT * FROM INVENTORY;");
+        rs = stmt.executeQuery(sql);
         // Resize the data array to accommodate all the records
         data = new Object[rowCount][5];
         int currentRow = 0;
         while (rs.next()) {
-            for (int i = 1; i <= 4; i++) {
+            for (int i = 1; i <= 5; i++) {
                 data[currentRow][i - 1] = rs.getString(i);
                 System.out.println(i);
             }
