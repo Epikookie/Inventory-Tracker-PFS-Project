@@ -29,7 +29,7 @@ public class Security {
      * @param input
      * @return
      */
-    public String generateSHA256Hash(String input) {
+    public static String generateSHA256Hash(String input) {
         try {
             // Create MessageDigest instance for SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -59,7 +59,7 @@ public class Security {
      * 
      * @return 4 character string
      */
-    public String generateSalt() {
+    public static String generateSalt() {
         String SALT_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
         StringBuilder salt = new StringBuilder();
@@ -81,9 +81,9 @@ public class Security {
      * @param hash
      * @return true if password matches hash, false otherwise
      */
-    public boolean checkPassword(String password, String salt, String hash) {
+    public static boolean checkPassword(String password, String salt, String hash) {
         Security.preventTimingAttack();
-        String hashedPassword = generateSHA256Hash(password + salt);
+        String hashedPassword = Security.generateSHA256Hash(password + salt);
         return hashedPassword.equals(hash);
     }
 
@@ -94,7 +94,7 @@ public class Security {
      * @param staffID
      * @return String array containing password hash and salt in order
      */
-    public String[] getPasswordHash(Statement stmt, int staffID) throws SQLException {
+    public static String[] getPasswordHash(Statement stmt, int staffID) throws SQLException {
         String[] passAndSalt = new String[2];
         String sql = "SELECT passhash, salt FROM staff WHERE id = '" + staffID + "'";
         ResultSet rs = stmt.executeQuery(sql);
@@ -179,7 +179,7 @@ public class Security {
         }
     }
 
-    public void Bruteforce() {
+    public static void Bruteforce() {
         System.out.println("Hello Bruteforce World");
         // TODO: Implement Bruteforce method
         // check that we dont too many attemps

@@ -10,7 +10,6 @@ public class AppFunctions {
     Statement stmt;
     ResultSet rs;
     String databaseName = "glitchtracking"; // local database file name
-    Security sec = new Security(); // used for all security functions
 
     // ----------------------------------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -217,9 +216,9 @@ public class AppFunctions {
                 firstDotLast = firstName[i].toLowerCase() + "." + lastName[i].toLowerCase();
                 email = firstDotLast + "@gmail.com";
                 password = firstDotLast + state[i] + postcode[i];
-                passhash = sec.generateSHA256Hash(password);
-                rfid = sec.generateSHA256Hash(passhash);
-                salt = sec.generateSalt();
+                passhash = Security.generateSHA256Hash(password);
+                rfid = Security.generateSHA256Hash(passhash);
+                salt = Security.generateSalt();
                 dateTime = LocalDateTime.now();
 
                 String query = "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, rfid, lastlogin) "
@@ -949,20 +948,6 @@ public class AppFunctions {
     }
 
     // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Checks the database to see what class would be most efficient for students to
-     * complete next
-     * badge
-     * ! Not implemented
-     * 
-     * @return JTable of classes with appropriate test, topic, or part
-     */
-    public JTable recommendClasses() {
-        return null;
-    }
-
-    // ----------------------------------------------------------------------------------------------------
     // CLASS METHODS - PRIVATE
     // ----------------------------------------------------------------------------------------------------
 
@@ -987,52 +972,6 @@ public class AppFunctions {
         }
 
         return data;
-    }
-
-    // ----------------------------------------------------------------------------------------------------
-    // ACHIEVEMENT METHODS - PUBLIC
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Checks for appropriate updates to all student's achievements, returns a null
-     * string if there are
-     * no updates, otherwise returns a string explaining the update. There should
-     * only be one update
-     * between calls of this method
-     * ! Not implemented
-     * 
-     * @return Null or string explaining update
-     */
-    public String updateAchievements() {
-        return null;
-    }
-
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a leaderboard of students based on their achievements, table shows
-     * student's id, name,
-     * and what badges they have earned
-     * ! Not implemented
-     * 
-     * @return JTable of leaderboard
-     */
-    public JTable viewLeaderboard() {
-        return null;
-    }
-
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a schedule of class dates and teachers who are scheduled to teach on
-     * that day.
-     * ! Not implemented
-     * 
-     * @return JTable of schedule
-     */
-
-    public JTable viewSchedule() {
-        return null;
     }
 
 }
