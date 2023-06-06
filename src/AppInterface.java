@@ -32,6 +32,8 @@ public class AppInterface {
         func.addInventory(1, 1, 5, 3);
         func.addInventory(2, 3, 10, 6);
         func.addInventory(3, 5, 15, 9);
+        func.addInventory(4, 4, 2, 9);
+        func.addInventory(5, 4, 10, 9);
         // func.addClass(1, "23/05/2022", null, 1, null);
 
         new Login(func);
