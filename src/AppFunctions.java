@@ -377,23 +377,45 @@ public class AppFunctions {
     // -------------------------------------------------------
     public JTable searchInventoryByItem(String itemName) {
         // initialise return objects
-        String[] col = { "itemid", "storeid", "quantity", "instock", "lownum" };
-        Object[][] data = new Object[1][5];
+        Object[][] data = new Object[0][0];
+        String[] col = { "Item ID", "Store ID", "Quantity", "Name", "Summary" };
+        // Object[][] data = new Object[1][5];
         String sql = """
-        SELECT * FROM (SELECT * FROM INVENTORY as inv) 
-        WHERE inv.
-
-
-                """;
-
+                SELECT *
+                        FROM(
+                            SELECT Inv.itemid, Inv.storeid, Inv.instock, itm.name, itm.summary
+                            FROM Inventory AS Inv, Item AS itm
+                            WHERE Inv.itemid = itm.id
+                            ) as subquery
+                WHERE subquery.name='""";
+        sql = sql + "" + itemName + "\';";
+        System.out.println(sql);
         try {
-            data = queryInventory(data);
+            rs = stmt.executeQuery(sql);
+            int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+            System.out.println("Row" + rowCount);
+            // Reset the ResultSet to the start
+            rs = stmt.executeQuery(sql);
+            // Resize the data array to accommodate all the records
+            data = new Object[rowCount][5];
+            int currentRow = 0;
+            while (rs.next()) {
+                for (int i = 1; i <= 5; i++) {
+                    data[currentRow][i - 1] = rs.getString(i);
+                    System.out.println(i);
+                }
+                currentRow++;
+            }
 
         } catch (SQLException e) {
-            System.err.print(e.getMessage());
+            // print out error
+            System.out.println(e.getMessage());
         }
 
-        // return student information
+        // return filtered results
         return new JTable(data, col);
     }
 

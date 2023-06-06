@@ -12,8 +12,20 @@ public class AppInterface {
 
         // Add Items to Database
         func.addItem(2, "Apple", "This is just an ordinary apple.");
-        func.addItem(4, "Banana", "This is just an ordinary banana.");
+        func.addItem(4, "Apple", "This is just an ordinary banana.");
+        func.addItem(7, "Cherry", "This is no ordinary cherry.");
+        func.addItem(2, "Apple", "This is just an ordinary apple.");
+        func.addItem(4, "Apple", "This is just an ordinary banana.");
         func.addItem(8, "Cherry", "This is no ordinary cherry.");
+        func.addItem(4, "Apple", "This is just an ordinary apple.");
+        func.addItem(4, "Apple", "This is just an ordinary banana.");
+        func.addItem(8, "Cherry", "This is no ordinary cherry.");
+        func.addItem(2, "Apple", "This is just an ordinary apple.");
+        func.addItem(4, "Apple", "This is just an ordinary banana.");
+        func.addItem(2, "Cherry", "This is no ordinary cherry.");
+        func.addItem(2, "Apple", "This is just an ordinary apple.");
+        func.addItem(4, "Apple", "This is just an ordinary banana.");
+        func.addItem(1, "Cherry", "This is no ordinary cherry.");
 
         // Add 10 bananas to inventory in store 3 Knives Out and set low stock to 3
         // bananas
