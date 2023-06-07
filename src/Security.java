@@ -190,7 +190,7 @@ public class Security {
      * new commands are issued
      */
     public static void preventInfiniteLoop() {
-        // TODO: Implement Bruteforce method
+        // TODO: Implement preventInfiniteLoo method
         System.out.println("Hello Infinite Loop World");
     }
 
@@ -198,7 +198,7 @@ public class Security {
      * Limit amount of user requests to sever within a certain time frame
      */
     public static void preventDDOS() {
-        // TODO: Implement Bruteforce method
+        // TODO: Implement preventDDOS method
         System.out.println("Hello DDOS World");
     }
 

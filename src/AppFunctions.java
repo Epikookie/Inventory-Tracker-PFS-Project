@@ -642,7 +642,7 @@ public class AppFunctions {
         Object[][] data = new Object[1][col.length];
 
         try {
-            data = queryInventory(data,lowStock);
+            data = queryInventory(data, lowStock);
         } catch (SQLException e) {
             System.err.print(e.getMessage());
         }
