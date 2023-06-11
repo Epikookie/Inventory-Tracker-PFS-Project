@@ -105,7 +105,7 @@ public class ScanInOut implements ActionListener {
   }
 
   public String sanitiseStore(String storeVal) {
-    if (storeVal.length() == 10) {
+    if (storeVal.length() != 1) {
       return storeVal;
     }
     return "";

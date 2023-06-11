@@ -328,32 +328,32 @@ public class AppFunctions {
      * Populate item table with dummy data
      */
     public void populateItems() {
-        addItem(1, "Apple", "This is just an ordinary apple");
-        addItem(2, "Banana", "This is just an ordinary banana");
-        addItem(3, "Cherry", "This is no ordinary cherry");
-        addItem(4, "D fruit", "Delicious fruit");
-        addItem(5, "E fruit", "Energetic fruit");
-        addItem(6, "Grapes", "So grape");
-        addItem(6, "F fruit", "Feelgood fruit");
-        addItem(7, "H fruit", "Healthy fruit");
-        addItem(8, "I fruit", "Interesting fruit");
-        addItem(8, "J fruit", "Just fruit");
-        addItem(9, "Kiwifruit", "NZ fruit");
-        addItem(10, "Lime", "In the coconut fruit");
-        addItem(1, "Mango", "Kramer fruit");
-        addItem(2, "N fruit", "Nice fruit");
-        addItem(3, "Orange", "Colourful fruit.");
-        addItem(4, "Pineapple", "Hawaiian fruit");
-        addItem(5, "Q fruit", "Questionable fruit");
-        addItem(6, "R fruit", "Red fruit");
-        addItem(7, "S fruit", "Succulent fruit");
-        addItem(8, "Tangerine", "Tasty fruit");
-        addItem(8, "Banana", "Longer shelf life");
-        addItem(9, "Banana", "Shorter shelf life");
-        addItem(10, "Apple", "Fuji - seconds");
-        addItem(9, "Apple", "Fuji - Newer Stock");
-        addItem(8, "Apple", "Small Red Delicious");
-        addItem(7, "Apple", "Big Red Delicious");
+        addItem(1, "Apple", "This is just an ordinary apple", "1234567890");
+        addItem(2, "Banana", "This is just an ordinary banana", "1234567891");
+        addItem(3, "Cherry", "This is no ordinary cherry", "1234567892");
+        addItem(4, "D fruit", "Delicious fruit", "1234567893");
+        addItem(5, "E fruit", "Energetic fruit", "1234567894");
+        addItem(6, "Grapes", "So grape", "1234567895");
+        addItem(6, "F fruit", "Feelgood fruit", "1234567896");
+        addItem(7, "H fruit", "Healthy fruit", "1234567897");
+        addItem(8, "I fruit", "Interesting fruit", "1234567898");
+        addItem(8, "J fruit", "Just fruit", "1234567899");
+        addItem(9, "Kiwifruit", "NZ fruit", "1234567800");
+        addItem(10, "Lime", "In the coconut fruit", "1234567801");
+        addItem(1, "Mango", "Kramer fruit", "1234567802");
+        addItem(2, "N fruit", "Nice fruit", "1234567803");
+        addItem(3, "Orange", "Colourful fruit.", "1234567804");
+        addItem(4, "Pineapple", "Hawaiian fruit", "1234567805");
+        addItem(5, "Q fruit", "Questionable fruit", "1234567806");
+        addItem(6, "R fruit", "Red fruit", "1234567807");
+        addItem(7, "S fruit", "Succulent fruit", "1234567808");
+        addItem(8, "Tangerine", "Tasty fruit", "1234567809");
+        addItem(8, "Banana", "Longer shelf life", "1234567810");
+        addItem(9, "Banana", "Shorter shelf life", "1234567811");
+        addItem(10, "Apple", "Fuji - seconds", "1234567812");
+        addItem(9, "Apple", "Fuji - Newer Stock", "1234567813");
+        addItem(8, "Apple", "Small Red Delicious", "1234567814");
+        addItem(7, "Apple", "Big Red Delicious", "1234567815");
     }
 
     /**
@@ -452,10 +452,13 @@ public class AppFunctions {
      * @param itemSummary
      * @return true if successful, false if not
      */
-    public boolean addItem(int supplier, String itemName, String itemSummary) {
+    public boolean addItem(int supplier, String itemName, String itemSummary, String rfid) {
         try {
-            stmt.executeUpdate("INSERT INTO item(supplierid, name, summary) " +
-                    "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary +
+            // stmt.executeUpdate("INSERT INTO item(supplierid, name, summary) " +
+            // "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary +
+            // "\');");
+            stmt.executeUpdate("INSERT INTO item(supplierid, name, summary, rfid) " +
+                    "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary + "', '" + rfid +
                     "\');");
             System.out.println("Item " + itemName + " added");
             return true;
@@ -734,7 +737,7 @@ public class AppFunctions {
     public boolean scanIn(String RFID, int Quantity, String storeName) {
         try {
             // Get itemid from RFID
-            rs = stmt.executeQuery("SELECT itemid FROM item WHERE rfid = \'" + RFID + "\';");
+            rs = stmt.executeQuery("SELECT id FROM item WHERE rfid = \'" + RFID + "\';");
             int itemid = rs.getInt(1);
 
             // Get storeid from storeName
@@ -758,13 +761,14 @@ public class AppFunctions {
     public boolean scanOut(String RFID, int Quantity, String storeName) {
         try {
             // Get itemid from RFID
-            rs = stmt.executeQuery("SELECT itemid FROM item WHERE rfid = \'" + RFID + "\';");
+            System.out.println(RFID);
+            rs = stmt.executeQuery("SELECT id FROM item WHERE rfid = \'" + RFID + "\';");
             int itemid = rs.getInt(1);
-
+            System.out.println(itemid);
             // Get storeid from storeName
             rs = stmt.executeQuery("SELECT id FROM store WHERE name = \'" + storeName + "\';");
             int storeid = rs.getInt(1);
-
+            System.out.println(storeid);
             // Remove from stock
             stmt.executeUpdate("UPDATE inventory SET instock = instock - " + Quantity + " WHERE itemid = " + itemid
                     + " AND storeid = " + storeid + ";");
