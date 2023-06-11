@@ -163,6 +163,7 @@ public class AppFunctions {
                             supplierid int NOT NULL,
                             name varchar(45) NOT NULL,
                             summary tinytext,
+                            rfid varchar(300) DEFAULT NULL,
                             CONSTRAINT fk_supplierid FOREIGN KEY (supplierid) REFERENCES supplier (id) ON DELETE CASCADE ON UPDATE CASCADE)
                             """);
 
@@ -725,6 +726,54 @@ public class AppFunctions {
         }
 
         return data;
+    }
+
+    /**
+     * Add to stock based on RDFID tag
+     */
+    public boolean scanIn(String RFID, int Quantity, String storeName) {
+        try {
+            // Get itemid from RFID
+            rs = stmt.executeQuery("SELECT itemid FROM item WHERE rfid = \'" + RFID + "\';");
+            int itemid = rs.getInt(1);
+
+            // Get storeid from storeName
+            rs = stmt.executeQuery("SELECT id FROM store WHERE name = \'" + storeName + "\';");
+            int storeid = rs.getInt(1);
+
+            // Add to stock
+            stmt.executeUpdate("UPDATE inventory SET instock = instock + " + Quantity + " WHERE itemid = " + itemid
+                    + " AND storeid = " + storeid + ";");
+
+            return true;
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Remove from stock based on RDFID tag
+     */
+    public boolean scanOut(String RFID, int Quantity, String storeName) {
+        try {
+            // Get itemid from RFID
+            rs = stmt.executeQuery("SELECT itemid FROM item WHERE rfid = \'" + RFID + "\';");
+            int itemid = rs.getInt(1);
+
+            // Get storeid from storeName
+            rs = stmt.executeQuery("SELECT id FROM store WHERE name = \'" + storeName + "\';");
+            int storeid = rs.getInt(1);
+
+            // Remove from stock
+            stmt.executeUpdate("UPDATE inventory SET instock = instock - " + Quantity + " WHERE itemid = " + itemid
+                    + " AND storeid = " + storeid + ";");
+
+            return true;
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            return false;
+        }
     }
 
     // !Old queries

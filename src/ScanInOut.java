@@ -31,15 +31,35 @@ public class ScanInOut implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    String RFID = itemInput.getText();
-    String storeVal = storeInput.getText();
-    String quantityVal = Quantity.getText();
     String Operation = e.getActionCommand();
+
     switch (Operation) {
       case "Scan In":
+        if (validateInputs()) {
+          String RFID = itemInput.getText();
+          String storeVal = storeInput.getText();
+          String quantityVal = Quantity.getText();
+          int quantity = Integer.parseInt(quantityVal);
+          if (func.scanIn(RFID, quantity, storeVal)) {
+            labelThree.setText("Item scanned in successfully");
+          } else {
+            labelThree.setText("Item not scanned in successfully");
+          }
+        }
         System.out.println(Operation);
         break;
       case "Scan Out":
+        if (validateInputs()) {
+          String RFID = itemInput.getText();
+          String storeVal = storeInput.getText();
+          String quantityVal = Quantity.getText();
+          int quantity = Integer.parseInt(quantityVal);
+          if (func.scanOut(RFID, quantity, storeVal)) {
+            labelThree.setText("Item scanned out successfully");
+          } else {
+            labelThree.setText("Item not scanned out successfully");
+          }
+        }
         System.out.println(Operation);
         break;
       case "Back": // Handle back button action
@@ -48,12 +68,61 @@ public class ScanInOut implements ActionListener {
         break;
     }
 
-    if (RFID.equals("root")) {
-      labelThree.setText("Scan successful. Loading...");
-      frame.dispose();
-      // Call your MainMenu() class or code here
+  }
+
+  public boolean validateInputs() {
+    String RFID = itemInput.getText();
+    String storeVal = storeInput.getText();
+    String quantityVal = Quantity.getText();
+    if (RFID.equals("") || storeVal.equals("") || quantityVal.equals("")) {
+      labelThree.setText("Please fill in all fields");
+      return false;
+    }
+    // Check RFID is valid
+    if (sanitiseRFID(RFID).equals("")) {
+      labelThree.setText("Please enter a valid RFID");
+      return false;
+    }
+    // Check store is valid
+    if (sanitiseStore(storeVal).equals("")) {
+      labelThree.setText("Please enter a valid store");
+      return false;
+    }
+    storeVal = sanitiseStore(storeVal);
+    if (!validateQuantity(quantityVal)) {
+      labelThree.setText("Please enter a valid quantity");
+      return false;
+    }
+    return true;
+  }
+
+  public String sanitiseRFID(String RFID) {
+    if (RFID.length() == 10) {
+      return RFID;
+    }
+    return "";
+
+  }
+
+  public String sanitiseStore(String storeVal) {
+    if (storeVal.length() == 10) {
+      return storeVal;
+    }
+    return "";
+  }
+
+  public boolean validateQuantity(String quantityVal) {
+    // Check string is numeric
+    if (quantityVal.matches("[0-9]+")) {
+      int quantity = Integer.parseInt(quantityVal);
+      // Check quantity is greater than 0
+      if (quantity > 0) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      labelThree.setText("Please check fields");
+      return false;
     }
   }
 
