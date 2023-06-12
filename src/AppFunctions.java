@@ -732,24 +732,52 @@ public class AppFunctions {
     }
 
     /**
-     * Add to stock based on RDFID tag
+     * Add to stock based on RFID tag
      */
     public boolean scanIn(String RFID, int Quantity, String storeName) {
         try {
             // Get itemid from RFID
-            rs = stmt.executeQuery("SELECT id FROM item WHERE rfid = \'" + RFID + "\';");
-            int itemid = rs.getInt(1);
+            PreparedStatement itemStatement = conn.prepareStatement("SELECT id FROM item WHERE rfid = ?");
+            itemStatement.setString(1, RFID);
+            ResultSet itemResult = itemStatement.executeQuery();
+
+            int itemid;
+            if (itemResult.next()) {
+                itemid = itemResult.getInt(1);
+            } else {
+                // Handle case when item not found
+                return false;
+            }
+            itemResult.close();
+            itemStatement.close();
 
             // Get storeid from storeName
-            rs = stmt.executeQuery("SELECT id FROM store WHERE name = \'" + storeName + "\';");
-            int storeid = rs.getInt(1);
+            PreparedStatement storeStatement = conn.prepareStatement("SELECT id FROM store WHERE name = ?");
+            storeStatement.setString(1, storeName);
+            ResultSet storeResult = storeStatement.executeQuery();
+
+            int storeid;
+            if (storeResult.next()) {
+                storeid = storeResult.getInt(1);
+            } else {
+                // Handle case when store not found
+                return false;
+            }
+            storeResult.close();
+            storeStatement.close();
 
             // Add to stock
-            stmt.executeUpdate("UPDATE inventory SET instock = instock + " + Quantity + " WHERE itemid = " + itemid
-                    + " AND storeid = " + storeid + ";");
-
+            PreparedStatement updateStatement = conn
+                    .prepareStatement("UPDATE inventory SET instock = instock + ? WHERE itemid = ? AND storeid = ?");
+            updateStatement.setInt(1, Quantity);
+            updateStatement.setInt(2, itemid);
+            updateStatement.setInt(3, storeid);
+            updateStatement.executeUpdate();
+            updateStatement.close();
+            System.out.println("Scanned in Sucessfully");
             return true;
         } catch (SQLException e) {
+            System.out.println("Error scanning in");
             System.err.print(e.getMessage());
             return false;
         }
@@ -761,20 +789,47 @@ public class AppFunctions {
     public boolean scanOut(String RFID, int Quantity, String storeName) {
         try {
             // Get itemid from RFID
-            System.out.println(RFID);
-            rs = stmt.executeQuery("SELECT id FROM item WHERE rfid = \'" + RFID + "\';");
-            int itemid = rs.getInt(1);
-            System.out.println(itemid);
-            // Get storeid from storeName
-            rs = stmt.executeQuery("SELECT id FROM store WHERE name = \'" + storeName + "\';");
-            int storeid = rs.getInt(1);
-            System.out.println(storeid);
-            // Remove from stock
-            stmt.executeUpdate("UPDATE inventory SET instock = instock - " + Quantity + " WHERE itemid = " + itemid
-                    + " AND storeid = " + storeid + ";");
+            PreparedStatement itemStatement = conn.prepareStatement("SELECT id FROM item WHERE rfid = ?");
+            itemStatement.setString(1, RFID);
+            ResultSet itemResult = itemStatement.executeQuery();
 
+            int itemid;
+            if (itemResult.next()) {
+                itemid = itemResult.getInt(1);
+            } else {
+                // Handle case when item not found
+                return false;
+            }
+            itemResult.close();
+            itemStatement.close();
+
+            // Get storeid from storeName
+            PreparedStatement storeStatement = conn.prepareStatement("SELECT id FROM store WHERE name = ?");
+            storeStatement.setString(1, storeName);
+            ResultSet storeResult = storeStatement.executeQuery();
+
+            int storeid;
+            if (storeResult.next()) {
+                storeid = storeResult.getInt(1);
+            } else {
+                // Handle case when store not found
+                return false;
+            }
+            storeResult.close();
+            storeStatement.close();
+
+            // Add to stock
+            PreparedStatement updateStatement = conn
+                    .prepareStatement("UPDATE inventory SET instock = instock - ? WHERE itemid = ? AND storeid = ?");
+            updateStatement.setInt(1, Quantity);
+            updateStatement.setInt(2, itemid);
+            updateStatement.setInt(3, storeid);
+            updateStatement.executeUpdate();
+            updateStatement.close();
+            System.out.println("Scanned in Sucessfully");
             return true;
         } catch (SQLException e) {
+            System.out.println("Error scanning in");
             System.err.print(e.getMessage());
             return false;
         }
