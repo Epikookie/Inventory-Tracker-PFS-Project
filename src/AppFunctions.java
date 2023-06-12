@@ -818,18 +818,37 @@ public class AppFunctions {
             storeResult.close();
             storeStatement.close();
 
-            // Add to stock
-            PreparedStatement updateStatement = conn
-                    .prepareStatement("UPDATE inventory SET instock = instock - ? WHERE itemid = ? AND storeid = ?");
-            updateStatement.setInt(1, Quantity);
-            updateStatement.setInt(2, itemid);
-            updateStatement.setInt(3, storeid);
-            updateStatement.executeUpdate();
-            updateStatement.close();
-            System.out.println("Scanned in Sucessfully");
-            return true;
+            // Check if instock is 0 or greater
+            PreparedStatement checkStatement = conn
+                    .prepareStatement("SELECT instock FROM inventory WHERE itemid = ? AND storeid = ?");
+            checkStatement.setInt(1, itemid);
+            checkStatement.setInt(2, storeid);
+            ResultSet checkResult = checkStatement.executeQuery();
+
+            if (checkResult.next()) {
+                int instock = checkResult.getInt(1);
+                if (instock >= Quantity) {
+                    // Subtract from stock
+                    PreparedStatement updateStatement = conn.prepareStatement(
+                            "UPDATE inventory SET instock = instock - ? WHERE itemid = ? AND storeid = ?");
+                    updateStatement.setInt(1, Quantity);
+                    updateStatement.setInt(2, itemid);
+                    updateStatement.setInt(3, storeid);
+                    updateStatement.executeUpdate();
+                    updateStatement.close();
+
+                    System.out.println("Scanned out successfully");
+                    return true;
+                } else {
+                    System.out.println("Not enough quantity in stock");
+                    return false;
+                }
+            } else {
+                System.out.println("Inventory record not found");
+                return false;
+            }
         } catch (SQLException e) {
-            System.out.println("Error scanning in");
+            System.out.println("Error scanning out");
             System.err.print(e.getMessage());
             return false;
         }
