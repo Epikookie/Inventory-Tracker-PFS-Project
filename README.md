@@ -6,7 +6,8 @@ out	where	inventory	is,	how	much	of	it	you	have,	who	supplies	it	etc.
 Application TODO:
 - Password verification and authentication, utilising bcrypt and salt - DONE
 - JUnit testing for security functions
-- Additional Security Features
+- Additional Security Features:
+>> Need timout after X incorrect login attempts
 
 Wishlist:
 - Manager console with CRUD operations for Item, Staff, Store and Supplier
