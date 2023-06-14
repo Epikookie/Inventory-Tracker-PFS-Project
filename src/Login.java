@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 /**
@@ -45,15 +47,24 @@ public class Login implements ActionListener {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    String teacherID = userInput.getText();
+    String staffID = userInput.getText();
     String password = String.valueOf(passwordInput.getPassword());
-    if (teacherID.equals("root") && password.equals("toor")) {
+
+    if (func.attemptLogin(staffID, password)) {
       labelThree.setText("Login successful. Loading...");
       new MainWindow(func);
       frame.dispose();
     } else {
-      labelThree.setText("ID or Password is incorrect");
+      labelThree.setText("[TEST DETAILS] StaffID: 11 , Pass: SUPERpassword1!");
     }
+
+    // if (staffID.equals("root") && password.equals("toor")) {
+    // labelThree.setText("Login successful. Loading...");
+    // new MainWindow(func);
+    // frame.dispose();
+    // } else {
+    // labelThree.setText("ID or Password is incorrect");
+    // }
   }
 
   public void Window() {
@@ -69,7 +80,7 @@ public class Login implements ActionListener {
     gbc.fill = GridBagConstraints.HORIZONTAL;
 
     // Add Labels
-    labelOne = new JLabel("ID:");
+    labelOne = new JLabel("Staff ID:");
     panel.add(labelOne, gbc);
 
     gbc.gridx = 0;
@@ -100,6 +111,20 @@ public class Login implements ActionListener {
     buttonOne = new JButton("Sign In");
     buttonOne.addActionListener(this);
     panel.add(buttonOne, gbc);
+
+    // Create a common KeyAdapter for both text fields
+    // Allows the user to press enter to Sign In
+    KeyAdapter enterKeyListener = new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          actionPerformed(null); // Trigger the action
+        }
+      }
+    };
+
+    // Add the KeyAdapter to Staff ID and Password text fields
+    userInput.addKeyListener(enterKeyListener);
+    passwordInput.addKeyListener(enterKeyListener);
 
     gbc.anchor = GridBagConstraints.LINE_START;
     gbc.gridx = 0;

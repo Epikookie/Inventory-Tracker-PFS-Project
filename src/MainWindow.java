@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -53,12 +55,16 @@ public class MainWindow implements ActionListener {
         frame.dispose();
         break;
       case "Search":
-        System.out.println(Operation);
-        JTable resultTable;
-        resultTable = runQuery();
-        refreshView(resultTable);
+        search();
         break;
     }
+  }
+
+  public void search() {
+    System.out.println("Search");
+    JTable resultTable;
+    resultTable = runQuery();
+    refreshView(resultTable);
   }
 
   private JTable runQuery() {
@@ -68,11 +74,11 @@ public class MainWindow implements ActionListener {
     boolean lowStock = toggleButton.isSelected();
 
     if (!itemString.isBlank()) {
-      return func.searchInventoryByItem(itemString,lowStock);
+      return func.searchInventoryByItem(itemString, lowStock);
     } else if (!storeString.isBlank()) {
-      return func.searchInventoryByStore(storeString,lowStock);
+      return func.searchInventoryByStore(storeString, lowStock);
     } else if (!supplierString.isBlank()) {
-      return func.searchInventoryBySupplier(supplierString,lowStock);
+      return func.searchInventoryBySupplier(supplierString, lowStock);
     }
 
     return func.allInventory(lowStock);
@@ -163,6 +169,20 @@ public class MainWindow implements ActionListener {
     searchButton = new JButton("Search");
     searchButton.addActionListener(this);
 
+    // Create a common KeyAdapter for text fields
+    KeyAdapter enterKeyListener = new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          search();
+        }
+      }
+    };
+
+    // Add the KeyAdapter to the text fields
+    itemField.addKeyListener(enterKeyListener);
+    storeField.addKeyListener(enterKeyListener);
+    supplierField.addKeyListener(enterKeyListener);
+
     gbc.gridx = 4;
     gbc.gridy = 1;
     gbc.gridheight = 3;
@@ -180,7 +200,7 @@ public class MainWindow implements ActionListener {
     panel.add(toggleButton, gbc);
 
     // Table
-      tableScrollPane = new JScrollPane(table);
+    tableScrollPane = new JScrollPane(table);
     gbc.gridx = 0;
     gbc.gridy = 10;
     gbc.gridwidth = 3;

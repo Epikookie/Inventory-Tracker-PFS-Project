@@ -454,9 +454,6 @@ public class AppFunctions {
      */
     public boolean addItem(int supplier, String itemName, String itemSummary, String rfid) {
         try {
-            // stmt.executeUpdate("INSERT INTO item(supplierid, name, summary) " +
-            // "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary +
-            // "\');");
             stmt.executeUpdate("INSERT INTO item(supplierid, name, summary, rfid) " +
                     "VALUES (\'" + supplier + "', '" + itemName + "', '" + itemSummary + "', '" + rfid +
                     "\');");
@@ -467,6 +464,100 @@ public class AppFunctions {
             System.err.print(e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Add staff member to the database
+     * 
+     * @param firstName
+     * @param lastName
+     * @param phone
+     * @param email
+     * @param street
+     * @param suburb
+     * @param state
+     * @param postcode
+     * @param password
+     * 
+     * @return true if successful, false if not
+     */
+    public boolean addStaff(String firstName, String lastName, String phone, String email, String street,
+            String suburb, String state, String postcode, String password) {
+
+        String passhash, salt, rfid, saltedPassword;
+        LocalDateTime dateTime;
+
+        try {
+            salt = Security.generateSalt();
+            saltedPassword = password + salt;
+            passhash = Security.generateSHA256Hash(saltedPassword);
+            rfid = Security.generateSHA256Hash(passhash);
+            dateTime = LocalDateTime.now();
+            stmt.executeUpdate(
+                    "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, rfid, lastlogin) "
+                            +
+                            "VALUES ('" + firstName + "', '" + lastName + "', '" + phone + "', '" + email + "', '"
+                            + street
+                            + "', '" + suburb + "', '" + state + "', '" +
+                            postcode + "', '" + passhash + "', '" + salt + "', '" + rfid + "', '" + dateTime + "')");
+
+            System.out.println("Staff member " + firstName + " " + lastName + " added");
+            return true;
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Attempt log in with given username and password. Returns true if successful,
+     * 
+     * @param username
+     * @param password
+     * @return true if successful, false if not
+     */
+    public boolean attemptLogin(String staffID, String password) {
+
+        if (!Security.validStaffID(staffID, stmt)) {
+            System.err.println("Staff ID invalid");
+            return false;
+        }
+
+        if (!Security.validPassword(password)) {
+            System.err.println(
+                    "Password must be minimum 12 characters, at least 1 lowerand uppercase letter, 1 number, and 1 special character");
+            System.err.println("Password invalid");
+            return false;
+        }
+
+        int staffIDint = Integer.parseInt(staffID);
+        String[] hashAndSalt;
+
+        // Get hash and salt from database
+        try {
+            hashAndSalt = Security.getHashAndSalt(staffIDint, stmt);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+
+        if (hashAndSalt == null) {
+            System.err.println("StaffID not found");
+            return false;
+        }
+
+        String hash = hashAndSalt[0];
+        String salt = hashAndSalt[1];
+
+        if (Security.correctPassword(password, salt, hash)) {
+            System.out.println("Login successful");
+            return true;
+        } else {
+            System.err.println("Incorrect password");
+            return false;
+        }
+
     }
 
     /**

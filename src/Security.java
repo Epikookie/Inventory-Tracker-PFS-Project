@@ -18,9 +18,9 @@ public class Security {
         System.out.println("Hello Security World");
 
         // Test the password validator and timing attack prevention
-        testIsPasswordValid();
+        testValidPassword();
         preventTimingAttack();
-        testIsPasswordValid();
+        testValidPassword();
     }
 
     /**
@@ -74,39 +74,32 @@ public class Security {
     }
 
     /**
-     * Check if the salted password matches the hash
+     * Check login credentials. Returns true if correct username and password
+     * entered. False otherwise.
      * 
-     * @param password
-     * @param salt
-     * @param hash
-     * @return true if password matches hash, false otherwise
-     */
-    public static boolean checkPassword(String password, String salt, String hash) {
-        Security.preventTimingAttack();
-        String hashedPassword = Security.generateSHA256Hash(password + salt);
-        return hashedPassword.equals(hash);
-    }
-
-    /**
-     * Get password hash and salt from the database
-     * 
-     * @param stmt
      * @param staffID
-     * @return String array containing password hash and salt in order
+     * @param password
+     * @return true if correct username and password entered. False otherwise.
      */
-    public static String[] getPasswordHash(Statement stmt, int staffID) throws SQLException {
-        String[] passAndSalt = new String[2];
-        String sql = "SELECT passhash, salt FROM staff WHERE id = '" + staffID + "'";
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            String hash = rs.getString("passhash");
-            String salt = rs.getString("salt");
-            passAndSalt[0] = hash;
-            passAndSalt[1] = salt;
-            // System.out.println("Passhash: " + hash + "\nSalt: " + salt); // Used for
-            // debugging
+    public static boolean validStaffID(String staffID, Statement stmt) {
+        int staffIDint;
+
+        // Assert staffID is numerical
+        try {
+            staffIDint = Integer.parseInt(staffID);
+        } catch (NumberFormatException e) {
+            System.err.println("Staff ID must be numerical. Entered: " + staffID);
+            return false;
         }
-        return passAndSalt;
+
+        // Assert staffID is positive integer
+        if (staffIDint <= 0) {
+            System.err.println("Staff ID must be positive integer. Entered: " + staffID);
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
@@ -135,7 +128,7 @@ public class Security {
      * @param password
      * @return boolean
      */
-    public static boolean isPasswordValid(String password) {
+    public static boolean validPassword(String password) {
         // Minimum 12 characters, at least 1 lowercase letter, 1 uppercase letter, 1
         // number, and 1 special character
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$";
@@ -146,8 +139,45 @@ public class Security {
         return matcher.matches();
     }
 
+    /**
+     * Get password hash and salt from the database
+     * 
+     * @param stmt
+     * @param staffID
+     * @return String array containing password hash and salt in order
+     */
+    public static String[] getHashAndSalt(int staffID, Statement stmt) throws SQLException {
+        String[] passAndSalt = new String[2];
+        String sql = "SELECT passhash, salt FROM staff WHERE id = '" + staffID + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            String hash = rs.getString("passhash");
+            String salt = rs.getString("salt");
+            passAndSalt[0] = hash;
+            passAndSalt[1] = salt;
+            // System.out.println("Passhash: " + hash + "\nSalt: " + salt); // Used for
+            // debugging
+        }
+
+        return passAndSalt;
+    }
+
+    /**
+     * Check if the salted password matches the hash
+     * 
+     * @param password
+     * @param salt
+     * @param hash
+     * @return true if password matches hash, false otherwise
+     */
+    public static boolean correctPassword(String password, String salt, String hash) {
+        Security.preventTimingAttack();
+        String hashedPassword = Security.generateSHA256Hash(password + salt);
+        return hashedPassword.equals(hash);
+    }
+
     /** Test that valid password function works */
-    public static void testIsPasswordValid() {
+    public static void testValidPassword() {
         String password1 = "abcdefghiJ1!"; // Valid password
         String password2 = "abcdefgh!J1"; // Invalid password - less than 12 characters
         String password3 = "abcdefghiJJ!"; // Invalid password - missing number
@@ -155,12 +185,12 @@ public class Security {
         String password5 = "ABCDEFGHIJ1!"; // Invalid password - missing lower-case letter
         String password6 = "abcdefghiJ12"; // Invalid password - missing special letter
 
-        System.out.println("Password 1: " + password1 + " , should be true: " + isPasswordValid(password1));
-        System.out.println("Password 2: " + password2 + " , should be false: " + isPasswordValid(password2));
-        System.out.println("Password 3: " + password3 + " , should be false: " + isPasswordValid(password3));
-        System.out.println("Password 4: " + password4 + " , should be false: " + isPasswordValid(password4));
-        System.out.println("Password 5: " + password5 + " , should be false: " + isPasswordValid(password5));
-        System.out.println("Password 6: " + password6 + " , should be false: " + isPasswordValid(password6));
+        System.out.println("Password 1: " + password1 + " , should be true: " + validPassword(password1));
+        System.out.println("Password 2: " + password2 + " , should be false: " + validPassword(password2));
+        System.out.println("Password 3: " + password3 + " , should be false: " + validPassword(password3));
+        System.out.println("Password 4: " + password4 + " , should be false: " + validPassword(password4));
+        System.out.println("Password 5: " + password5 + " , should be false: " + validPassword(password5));
+        System.out.println("Password 6: " + password6 + " , should be false: " + validPassword(password6));
 
         return;
     }

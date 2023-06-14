@@ -47,6 +47,18 @@ public class AppInterface {
         func.addInventory(26, 2, 60, 9);
         func.addInventory(26, 5, 15, 20);
 
+        // user 11
+        func.addStaff("Kade", "Price", "0423647247", "kade.price@student.unsw.edu.au", "123 Canberra St", "Canberra",
+                "ACT", "2601", "SUPERpassword1!");
+
+        // user 12
+        func.addStaff("Ben", "Cook", "987654321", "ben.cook@student.unsw.edu.au", "123 Canberra St", "Canberra",
+                "ACT", "2601", "MEGApassword1!");
+
+        // user 13
+        func.addStaff("Don", "Le", "123456789", "don.le@student.unsw.edu.au", "123 Canberra St", "Canberra",
+                "ACT", "2601", "MADpassword1!");
+
         new Login(func);
     }
 
