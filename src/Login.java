@@ -38,6 +38,11 @@ public class Login implements ActionListener {
     });
   }
 
+  /**
+   * Action Listener for Login page
+   * 
+   * Used to check if the user has entered the correct credentials
+   */
   @Override
   public void actionPerformed(ActionEvent e) {
     String teacherID = userInput.getText();
