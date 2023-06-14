@@ -1,2 +1,2 @@
 # list files to ignore commits for
-/lib/glitchtracking.db
+lib/glitchtracking.db
