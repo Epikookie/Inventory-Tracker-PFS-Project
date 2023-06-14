@@ -2,6 +2,15 @@
 A	report	and	an	application	for	inventory	tracing.	i.e.	working	
 out	where	inventory	is,	how	much	of	it	you	have,	who	supplies	it	etc.
 
+# Kade 14/06/2023
+Application TODO:
+- Password verification and authentication, utilising bcrypt and salt
+- JUnit testing for security functions
+- Additional Security Features
+
+Wishlist:
+- Manager console with CRUD operations for Item, Staff, Store and Supplier
+
 # Kade 26-27/05/2023
 # settings.json - switch for setting output path of Java .class files
 "java.project.outputPath": ""
