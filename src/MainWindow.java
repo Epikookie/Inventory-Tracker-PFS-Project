@@ -3,6 +3,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -70,9 +73,89 @@ public class MainWindow implements ActionListener {
     refreshView(resultTable);
   }
 
+  /**
+   * Returns a JTable containing the results of the search query
+   * 
+   * @return
+   */
   private JTable runQuery() {
     String itemString = itemField.getText();
-    System.out.println("Item: " + itemString);
+    String storeString = storeField.getText();
+    String supplierString = supplierField.getText();
+    boolean lowStock = toggleButton.isSelected();
+
+    // If no search parameters are entered, return all inventory
+    if (itemString.isBlank() && storeString.isBlank() && supplierString.isBlank()) {
+      return func.allInventory(lowStock);
+    }
+
+    ArrayList<JTable> results = new ArrayList<JTable>();
+
+    // Gather the JTable results of each search field individually
+    if (!itemString.isBlank()) {
+      results.add(func.searchInventoryByItem(itemString, lowStock));
+    }
+    if (!storeString.isBlank()) {
+      results.add(func.searchInventoryByStore(storeString, lowStock));
+    }
+    if (!supplierString.isBlank()) {
+      results.add(func.searchInventoryBySupplier(supplierString, lowStock));
+    }
+
+    if (results.size() == 1) {
+      return results.get(0);
+    } else {
+      return getCommonRows(results);
+    }
+  }
+
+  /**
+   * Accepts an ArrayList of JTables and returns a JTable containing the common
+   * rows of all tables
+   * 
+   * @return
+   */
+  private JTable getCommonRows(ArrayList<JTable> tables) {
+
+    String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+
+    // ArrayList of HashSets to keep track of common rows
+    ArrayList<HashSet<Object[]>> results = new ArrayList<HashSet<Object[]>>(tables.size());
+
+    for (int i = 0; i < tables.size(); i++) {
+      JTable currentTable = tables.get(i);
+
+      // Create a HashSet to add every row's data from the current table
+      HashSet<Object[]> currentRows = new HashSet<Object[]>();
+
+      // Add each row of the current JTable to the currentRows HashSet except the
+      // first
+      for (int j = 0; j < currentTable.getRowCount(); j++) {
+        Object[] row = new Object[currentTable.getRowCount()];
+        for (int k = 0; k < currentTable.getColumnCount(); k++) {
+          row[k] = currentTable.getValueAt(j, k);
+        }
+
+        // Always add first JTable data to the HashSet array
+        if (i == 0) {
+          currentRows.add(row);
+        }
+
+        // Attempt to add current Object[] (row) to the previous HashSet. If it fails,
+        // it means
+        // the row already exists, therefore it exists
+        currentRows.add(row);
+      }
+
+      results.add(currentRows);
+    }
+
+    return new JTable(new Object[0][0], col);
+
+  }
+
+  private JTable runQuery1() {
+    String itemString = itemField.getText();
     String storeString = storeField.getText();
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
