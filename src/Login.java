@@ -55,16 +55,9 @@ public class Login implements ActionListener {
       new MainWindow(func);
       frame.dispose();
     } else {
-      labelThree.setText("[TEST DETAILS] StaffID: 11 , Pass: SUPERpassword1!");
+      labelThree.setText("[TEST DETAILS] Staff ID: 11 , Pass: SUPERpassword1!");
     }
 
-    // if (staffID.equals("root") && password.equals("toor")) {
-    // labelThree.setText("Login successful. Loading...");
-    // new MainWindow(func);
-    // frame.dispose();
-    // } else {
-    // labelThree.setText("ID or Password is incorrect");
-    // }
   }
 
   public void Window() {

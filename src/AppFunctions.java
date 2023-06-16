@@ -1,6 +1,5 @@
 import java.sql.*;
 import javax.swing.*;
-import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class AppFunctions {
@@ -590,7 +589,7 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE itm.name = ?
+                WHERE itm.name LIKE ? || '%'
                 """;
         if (lowStock) {
             sql += " AND Inv.instock < Inv.lownum;";
@@ -600,6 +599,7 @@ public class AppFunctions {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, itemName);
+            System.out.println(stmt.toString());
             ResultSet rs = stmt.executeQuery();
 
             // Determine the number of rows in the ResultSet
@@ -639,7 +639,7 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE S.name = ?
+                WHERE S.name LIKE ? || '%'
                 """;
 
         if (lowStock) {
@@ -689,7 +689,7 @@ public class AppFunctions {
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
                 JOIN Supplier AS Sup ON itm.supplierid = Sup.id
-                WHERE Sup.name = ?
+                WHERE Sup.name LIKE ? || '%'
                 """;
         if (lowStock) {
             sql += " AND Inv.instock < Inv.lownum;";

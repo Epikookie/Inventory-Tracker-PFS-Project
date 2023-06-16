@@ -60,6 +60,9 @@ public class MainWindow implements ActionListener {
     }
   }
 
+  /**
+   * Search for inventory items based on user inputs
+   */
   public void search() {
     System.out.println("Search");
     JTable resultTable;
@@ -69,6 +72,7 @@ public class MainWindow implements ActionListener {
 
   private JTable runQuery() {
     String itemString = itemField.getText();
+    System.out.println("Item: " + itemString);
     String storeString = storeField.getText();
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
