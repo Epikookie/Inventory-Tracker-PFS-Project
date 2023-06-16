@@ -3,12 +3,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 public class MainWindow implements ActionListener {
   private JFrame frame;
@@ -119,14 +117,14 @@ public class MainWindow implements ActionListener {
 
     String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
 
-    // ArrayList of HashSets to keep track of common rows
-    ArrayList<HashSet<Object[]>> results = new ArrayList<HashSet<Object[]>>(tables.size());
+    // ArrayList of ArrayLists to keep track of common rows
+    ArrayList<ArrayList<Object[]>> results = new ArrayList<ArrayList<Object[]>>(tables.size());
 
     for (int i = 0; i < tables.size(); i++) {
       JTable currentTable = tables.get(i);
 
-      // Create a HashSet to add every row's data from the current table
-      HashSet<Object[]> currentRows = new HashSet<Object[]>();
+      // Create a ArrayList to add every row's data from the current table
+      ArrayList<Object[]> currentRows = new ArrayList<Object[]>();
 
       // Add each row of the current JTable to the currentRows HashSet except the
       // first
@@ -140,10 +138,11 @@ public class MainWindow implements ActionListener {
         if (i == 0) {
           currentRows.add(row);
         } else {
-          // If the current row exists in the previous HashSet,
-          // add it to the current HashSet (because it's a common row)
-          HashSet<Object[]> previousRows = results.get(i - 1);
-          if (previousRows.contains(row)) {
+
+          // If the current row exists in the previous ArrayList,
+          // add it to the current ArrayList (because it's a common row)
+          ArrayList<Object[]> previousRows = results.get(i - 1);
+          if (rowInArray(previousRows, row)) {
             currentRows.add(row);
           }
         }
@@ -160,22 +159,20 @@ public class MainWindow implements ActionListener {
 
   }
 
-  private JTable runQuery1() {
-    String itemString = itemField.getText();
-    String storeString = storeField.getText();
-    String supplierString = supplierField.getText();
-    boolean lowStock = toggleButton.isSelected();
-
-    if (!itemString.isBlank()) {
-      return func.searchInventoryByItem(itemString, lowStock);
-    } else if (!storeString.isBlank()) {
-      return func.searchInventoryByStore(storeString, lowStock);
-    } else if (!supplierString.isBlank()) {
-      return func.searchInventoryBySupplier(supplierString, lowStock);
+  /**
+   * Returns true if the row is in the array
+   * 
+   * @param array
+   * @param row
+   * @return boolean
+   */
+  private boolean rowInArray(ArrayList<Object[]> array, Object[] row) {
+    for (int i = 0; i < array.size(); i++) {
+      if (Arrays.equals(array.get(i), row)) {
+        return true;
+      }
     }
-
-    return func.allInventory(lowStock);
-
+    return false;
   }
 
   private void refreshView(JTable resultTable) {

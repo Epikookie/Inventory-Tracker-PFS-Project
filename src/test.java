@@ -1,23 +1,25 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Arrays;
 
 public class test {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        String database = "database.db";
-        System.out.println("Database: " + database);
 
-        ArrayList<String> tables = new ArrayList<String>();
+        ArrayList<Object[]> currentRows = new ArrayList<Object[]>();
+        currentRows.add(new Object[] { "1", "2", "3", "4", "5", "6", "7", "8" });
+        var newer = new Object[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+        System.out.println(currentRows.contains(newer));
 
-        tables.add("Staff");
-        tables.add("Inventory");
-        tables.add("Store");
-        tables.add("Supplier");
+        HashSet<Object[]> hashRows = new HashSet<Object[]>();
+        hashRows.add(new Object[] { "1", "2", "3", "4", "5", "6", "7", "8" });
+        var hashnew = new Object[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+        System.out.println(hashRows.contains(hashnew));
 
-        for (String table : tables) {
-            System.out.println(table);
+        System.out.println(Arrays.equals(newer, hashnew));
+        System.out.println(Arrays.equals(newer, currentRows.get(0)));
+        System.out.println(newer.equals(currentRows.get(0)));
 
-        }
     }
 
 }
