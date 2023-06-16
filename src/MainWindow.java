@@ -131,7 +131,7 @@ public class MainWindow implements ActionListener {
       // Add each row of the current JTable to the currentRows HashSet except the
       // first
       for (int j = 0; j < currentTable.getRowCount(); j++) {
-        Object[] row = new Object[currentTable.getRowCount()];
+        Object[] row = new Object[currentTable.getColumnCount()];
         for (int k = 0; k < currentTable.getColumnCount(); k++) {
           row[k] = currentTable.getValueAt(j, k);
         }
@@ -139,18 +139,24 @@ public class MainWindow implements ActionListener {
         // Always add first JTable data to the HashSet array
         if (i == 0) {
           currentRows.add(row);
+        } else {
+          // If the current row exists in the previous HashSet,
+          // add it to the current HashSet (because it's a common row)
+          HashSet<Object[]> previousRows = results.get(i - 1);
+          if (previousRows.contains(row)) {
+            currentRows.add(row);
+          }
         }
 
-        // Attempt to add current Object[] (row) to the previous HashSet. If it fails,
-        // it means
-        // the row already exists, therefore it exists
-        currentRows.add(row);
       }
 
       results.add(currentRows);
     }
 
-    return new JTable(new Object[0][0], col);
+    // Convert the final HashSet<Object[]> to an Object[][]
+    Object[][] commonRows = results.get(tables.size() - 1).toArray(new Object[0][]);
+
+    return new JTable(commonRows, col);
 
   }
 
