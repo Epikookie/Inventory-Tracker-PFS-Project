@@ -599,7 +599,6 @@ public class AppFunctions {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, itemName);
-            System.out.println(stmt.toString());
             ResultSet rs = stmt.executeQuery();
 
             // Determine the number of rows in the ResultSet

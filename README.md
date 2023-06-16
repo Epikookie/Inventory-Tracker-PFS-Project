@@ -5,6 +5,7 @@ out	where	inventory	is,	how	much	of	it	you	have,	who	supplies	it	etc.
 # Kade 14/06/2023
 Application TODO:
 - Password verification and authentication, utilising bcrypt and salt - DONE
+- Multi-search - DONE
 - JUnit testing for security functions
 - Additional Security Features:
 >> Need timout after X incorrect login attempts

@@ -51,9 +51,7 @@ public class MainWindow implements ActionListener {
         frame.dispose();
         break;
       case "Sign Out":
-        System.out.println(Operation);
-        new Login(func);
-        frame.dispose();
+        signOut();
         break;
       case "Search":
         search();
@@ -69,6 +67,17 @@ public class MainWindow implements ActionListener {
     JTable resultTable;
     resultTable = runQuery();
     refreshView(resultTable);
+  }
+
+  /**
+   * Sign out of the application
+   *
+   * @return
+   */
+  public void signOut() {
+    System.out.println("Sign Out");
+    new Login(func);
+    frame.dispose();
   }
 
   /**
