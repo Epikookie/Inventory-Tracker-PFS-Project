@@ -87,7 +87,8 @@ public class AppFunctions {
             if (overwrite) {
                 // drop tables if they already exist
                 System.out.println("Dropping existing tables");
-                stmt.executeUpdate("DROP TABLE IF EXISTS inventory;\n" +
+                stmt.executeUpdate("DROP TABLE IF EXISTS inventorylog;\n" +
+                        "DROP TABLE IF EXISTS inventory;\n" +
                         "DROP TABLE IF EXISTS item;\n" +
                         "DROP TABLE IF EXISTS staff;\n" +
                         "DROP TABLE IF EXISTS store;\n" +
@@ -181,6 +182,19 @@ public class AppFunctions {
                                 CONSTRAINT fk_itemid FOREIGN KEY (itemid) REFERENCES item (id),
                                 CONSTRAINT fk_storeid FOREIGN KEY (storeid) REFERENCES store (id) ON DELETE CASCADE ON UPDATE CASCADE
                               )
+                                """);
+
+            // Batch inventory table creation
+            stmt.addBatch(
+                    """
+                            CREATE TABLE IF NOT EXISTS inventorylog (
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                staffid INTEGER NOT NULL,
+                                itemid INTEGER NOT NULL,
+                                storeid INTEGER NOT NULL,
+                                operation VARCHAR(3) NOT NULL,
+                                quantity INTEGER NOT NULL,
+                                datetime datetime DEFAULT NULL)
                                 """);
 
             stmt.executeBatch();
@@ -555,7 +569,7 @@ public class AppFunctions {
         }
 
         if (hashAndSalt[0] == null) {
-            System.err.println("StaffID not found");
+            System.err.println("Staff ID not found");
             return false;
         }
 
@@ -583,6 +597,39 @@ public class AppFunctions {
             stmt.executeUpdate("INSERT INTO supplier(name) " +
                     "VALUES (\'" + supplierName + "\');");
             System.out.println("Supplier " + supplierName + " added");
+            return true;
+
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Updates the inventory log
+     * 
+     * @param supplierName
+     * @return true if successful, false if not
+     */
+    public boolean updateLog(int staffid, String rfid, String store, String operation, int quantity,
+            LocalDateTime date) {
+        try {
+
+            ResultSet itemRS = stmt
+                    .executeQuery("SELECT item.id FROM item WHERE item.rfid = '" + rfid + "';");
+            ResultSet storeRS = stmt
+                    .executeQuery("SELECT store.id FROM store WHERE store.name = '" + store + "';");
+
+            int itemid, storeid;
+
+            itemid = itemRS.getInt("id");
+            storeid = storeRS.getInt("id");
+
+            stmt.executeUpdate("INSERT INTO inventorylog(staffid, itemid, storeid, operation, quantity, datetime) " +
+                    "VALUES (" + staffid + ", " + itemid + ", " + storeid + ", \'" + operation + "\', "
+                    + quantity + ", \'" + date + "\');");
+
+            System.out.println("InventoryLog updated");
             return true;
 
         } catch (SQLException e) {

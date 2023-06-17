@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 public class AppInterface {
 
         public static AppFunctions func;
@@ -59,6 +61,12 @@ public class AppInterface {
                 // user 13
                 func.addStaff("Don", "Le", "123456789", "don.le@student.unsw.edu.au", "123 Canberra St", "Canberra",
                                 "ACT", "2601", "MADpassword1!");
+
+                // test updateLog
+                LocalDateTime now = LocalDateTime.now();
+
+                func.updateLog(11, "356a192b7913b04c54574d18c28d46e6395428ab", "GST Stronghold", "in", 500,
+                                now);
 
                 new Login(func);
         }

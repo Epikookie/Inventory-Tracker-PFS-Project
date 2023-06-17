@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.swing.*;
 
@@ -59,10 +60,10 @@ public class ScanInOut implements ActionListener {
           int quantity = Integer.parseInt(quantityVal);
           if (func.scanOut(RFID, quantity, storeVal)) {
             labelThree.setText("Item scanned out successfully");
-            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDate.now());
+            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
           } else {
             labelThree.setText("Item not scanned out successfully");
-            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDate.now());
+            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
 
           }
         }
