@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+
 import javax.swing.*;
 
 public class ScanInOut implements ActionListener {
@@ -32,7 +34,8 @@ public class ScanInOut implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     String Operation = e.getActionCommand();
-
+    // ! Get staff ID from login
+    int staffID = 1;
     switch (Operation) {
       case "Scan In":
         if (validateInputs()) {
@@ -56,8 +59,11 @@ public class ScanInOut implements ActionListener {
           int quantity = Integer.parseInt(quantityVal);
           if (func.scanOut(RFID, quantity, storeVal)) {
             labelThree.setText("Item scanned out successfully");
+            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDate.now());
           } else {
             labelThree.setText("Item not scanned out successfully");
+            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDate.now());
+
           }
         }
         System.out.println(Operation);
@@ -97,7 +103,8 @@ public class ScanInOut implements ActionListener {
   }
 
   public String sanitiseRFID(String RFID) {
-    if (RFID.length() == 10) {
+    // Ensure RFID is alphanumeric and 40 characters long
+    if (RFID.matches("[a-zA-Z0-9]+") && RFID.length() == 40) {
       return RFID;
     }
     return "";
@@ -105,7 +112,8 @@ public class ScanInOut implements ActionListener {
   }
 
   public String sanitiseStore(String storeVal) {
-    if (storeVal.length() != 1) {
+    // Ensure store is alphanumeric
+    if (storeVal.matches("[a-zA-Z0-9]+")) {
       return storeVal;
     }
     return "";
