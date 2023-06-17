@@ -10,6 +10,9 @@ public class AppFunctions {
     ResultSet rs;
     String databaseName = "glitchtracking"; // local database file name
 
+    // Constant JTable column names
+    String[] COL_NAMES = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
+
     // ----------------------------------------------------------------------------------------------------
     // CONSTRUCTOR
     // ----------------------------------------------------------------------------------------------------
@@ -150,8 +153,8 @@ public class AppFunctions {
                       postcode varchar(10) DEFAULT NULL,
                       passhash varchar(300) DEFAULT NULL,
                       salt varchar(4) DEFAULT NULL,
-                      rfid varchar(300) DEFAULT NULL,
-                      lastlogin datetime DEFAULT NULL)
+                      lastlogin datetime DEFAULT NULL,
+                      admin INTEGER DEFAULT 0)
                     """);
 
             // Batch item table creation
@@ -207,7 +210,7 @@ public class AppFunctions {
                 "0871" };
         String[] phone = { "(08)83186989", "(07)49044635", "(03)99851311", "(07)45940823", "(03)53356152",
                 "(08)94168098", "(08)90321422", "(07)40279091", "(07)40165282", "(07)45978132" };
-        String email, password, firstDotLast, passhash, salt, rfid;
+        String email, password, firstDotLast, passhash, salt;
         LocalDateTime dateTime;
 
         try {
@@ -217,16 +220,15 @@ public class AppFunctions {
                 email = firstDotLast + "@gmail.com";
                 password = firstDotLast + state[i] + postcode[i];
                 passhash = Security.generateSHA256Hash(password);
-                rfid = Security.generateSHA256Hash(passhash);
                 salt = Security.generateSalt();
                 dateTime = LocalDateTime.now();
 
-                String query = "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, rfid, lastlogin) "
+                String query = "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, lastlogin) "
                         +
                         "VALUES ('" + firstName[i] + "', '" + lastName[i] + "', '" + phone[i] + "', '" + email + "', '"
                         + street[i]
                         + "', '" + suburb[i] + "', '" + state[i] + "', '" +
-                        postcode[i] + "', '" + passhash + "', '" + salt + "', '" + rfid + "', '" + dateTime + "')";
+                        postcode[i] + "', '" + passhash + "', '" + salt + "', '" + dateTime + "')";
 
                 stmt.addBatch(query);
                 System.out.println("Staff " + firstName[i] + " " + lastName[i] + " added");
@@ -483,22 +485,21 @@ public class AppFunctions {
     public boolean addStaff(String firstName, String lastName, String phone, String email, String street,
             String suburb, String state, String postcode, String password) {
 
-        String passhash, salt, rfid, saltedPassword;
+        String passhash, salt, saltedPassword;
         LocalDateTime dateTime;
 
         try {
             salt = Security.generateSalt();
             saltedPassword = password + salt;
             passhash = Security.generateSHA256Hash(saltedPassword);
-            rfid = Security.generateSHA256Hash(passhash);
             dateTime = LocalDateTime.now();
             stmt.executeUpdate(
-                    "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, rfid, lastlogin) "
+                    "INSERT INTO staff (firstname, lastname, phone, email, street, suburb, state, postcode, passhash, salt, lastlogin) "
                             +
                             "VALUES ('" + firstName + "', '" + lastName + "', '" + phone + "', '" + email + "', '"
                             + street
                             + "', '" + suburb + "', '" + state + "', '" +
-                            postcode + "', '" + passhash + "', '" + salt + "', '" + rfid + "', '" + dateTime + "')");
+                            postcode + "', '" + passhash + "', '" + salt + "', '" + dateTime + "')");
 
             System.out.println("Staff member " + firstName + " " + lastName + " added");
             return true;
@@ -581,10 +582,10 @@ public class AppFunctions {
     // -------------------------------------------------------
     public JTable searchInventoryByItem(String itemName, boolean lowStock) {
         Object[][] data;
-        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+        String[] col = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
 
         String sql = """
-                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                SELECT itm.id, itm.name, S.name, Inv.instock, itm.summary, Sup.name
                 FROM Inventory AS Inv
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
@@ -630,10 +631,10 @@ public class AppFunctions {
 
     public JTable searchInventoryByStore(String storeName, boolean lowStock) {
         Object[][] data;
-        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+        String[] col = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
 
         String sql = """
-                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                SELECT itm.id, itm.name, S.name, Inv.instock, itm.summary, Sup.name
                 FROM Inventory AS Inv
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
@@ -680,10 +681,10 @@ public class AppFunctions {
 
     public JTable searchInventoryBySupplier(String supName, boolean lowStock) {
         Object[][] data;
-        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+        String[] col = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
 
         String sql = """
-                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                SELECT itm.id, itm.name, S.name, Inv.instock, itm.summary, Sup.name
                 FROM Inventory AS Inv
                 JOIN Item AS itm ON Inv.itemid = itm.id
                 JOIN Store AS S ON Inv.storeid = S.id
@@ -732,7 +733,7 @@ public class AppFunctions {
     // ----------------------------------------------------
 
     public JTable allInventory(boolean lowStock) {
-        String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+        String[] col = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
         Object[][] data = new Object[1][col.length];
 
         try {
@@ -747,7 +748,7 @@ public class AppFunctions {
     private Object[][] queryInventory(Object[][] data, boolean lowStock) throws SQLException {
         // get inventory details from database
         String sql = """
-                SELECT itm.name, S.name, Inv.instock, itm.summary, Sup.name
+                SELECT itm.id, itm.name, S.name, Inv.instock, itm.summary, Sup.name
                     FROM Inventory AS Inv
                     JOIN Item AS itm ON Inv.itemid = itm.id
                     JOIN Store AS S ON Inv.storeid = S.id
@@ -770,10 +771,10 @@ public class AppFunctions {
         // Reset the ResultSet to the start
         rs = stmt.executeQuery(sql);
         // Resize the data array to accommodate all the records
-        data = new Object[rowCount][5];
+        data = new Object[rowCount][COL_NAMES.length];
         int currentRow = 0;
         while (rs.next()) {
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= COL_NAMES.length; i++) {
                 data[currentRow][i - 1] = rs.getString(i);
                 System.out.println(i);
             }
@@ -784,7 +785,7 @@ public class AppFunctions {
 
     }
 
-    public JTable allSuppliers() {
+    public JTable viewSuppliers() {
         String[] col = { "Supplier ID", "Supplier Name", "Phone", "Email", "Contact Name", "Street", "Suburb", "State",
                 "Postcode" };
         Object[][] data = {};

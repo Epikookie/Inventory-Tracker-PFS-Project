@@ -124,7 +124,7 @@ public class MainWindow implements ActionListener {
    */
   private JTable getCommonRows(ArrayList<JTable> tables) {
 
-    String[] col = { "Item", "Store", "Quantity", "Summary", "Supplier" };
+    String[] col = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
 
     // ArrayList of ArrayLists to keep track of common rows
     ArrayList<ArrayList<Object[]>> results = new ArrayList<ArrayList<Object[]>>(tables.size());
@@ -135,8 +135,13 @@ public class MainWindow implements ActionListener {
       // Create a ArrayList to add every row's data from the current table
       ArrayList<Object[]> currentRows = new ArrayList<Object[]>();
 
-      // Add each row of the current JTable to the currentRows HashSet except the
-      // first
+      /*
+       * Add each row of currentTable to the currentRows ArrayList<Object[]>
+       * If it's the first JTable, add them all
+       * If it's not the first JTable, only add the rows that are in the previous
+       * This has a cascading effect, so the final ArrayList will only contain
+       * rows found in every JTable checked
+       */
       for (int j = 0; j < currentTable.getRowCount(); j++) {
         Object[] row = new Object[currentTable.getColumnCount()];
         for (int k = 0; k < currentTable.getColumnCount(); k++) {
