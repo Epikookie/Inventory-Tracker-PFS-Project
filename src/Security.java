@@ -24,6 +24,39 @@ public class Security {
     }
 
     /**
+     * Generate a SHA-1 hash of item primary key for RFID
+     * 
+     * @param input
+     * @return
+     */
+    public static String generateSHA1Hash(int inputInt) {
+        try {
+            String input = Integer.toString(inputInt);
+
+            // Create MessageDigest instance for SHA-1
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+
+            // Apply SHA-1 hash to the input string
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Handle exception if SHA-1 algorithm is not available
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Generate a SHA-256 hash of the input string
      * 
      * @param input
