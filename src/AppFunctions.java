@@ -885,6 +885,23 @@ public class AppFunctions {
     }
 
     /**
+     * Returns an RFID string for a given itemid
+     * 
+     * @param itemID string
+     * @return RFID string
+     */
+    public String getRFIDString(String itemID) throws SQLException {
+        String RFID = "Item ID not found in database";
+        PreparedStatement stmt = conn.prepareStatement("SELECT rfid FROM item WHERE id = ?");
+        stmt.setString(1, itemID);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            RFID = rs.getString(1);
+        }
+        return RFID;
+    }
+
+    /**
      * Add to stock based on RFID tag
      */
     public boolean scanIn(String RFID, int Quantity, String storeName) {

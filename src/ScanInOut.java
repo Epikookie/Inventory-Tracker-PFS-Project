@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import javax.swing.*;
@@ -17,7 +19,7 @@ public class ScanInOut implements ActionListener {
   private JTextField itemInput, Quantity;
   private JTextField storeInput;
   private JButton buttonOne;
-  private JButton backButton; // Added back button
+  private JButton backButton;
   public AppFunctions func;
 
   public ScanInOut(AppFunctions func) {
@@ -34,12 +36,11 @@ public class ScanInOut implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    RFIDtext.setText("[TEXT HERE]");
     String Operation = e.getActionCommand();
     switch (Operation) {
       case "Scan In":
         if (validateInputs()) {
-          String RFID = itemInput.getText();
+          String RFID = RFIDtext.getText();
           String storeVal = storeInput.getText();
           String quantityVal = Quantity.getText();
           int quantity = Integer.parseInt(quantityVal);
@@ -54,7 +55,7 @@ public class ScanInOut implements ActionListener {
         break;
       case "Scan Out":
         if (validateInputs()) {
-          String RFID = itemInput.getText();
+          String RFID = RFIDtext.getText();
           String storeVal = storeInput.getText();
           String quantityVal = Quantity.getText();
           int quantity = Integer.parseInt(quantityVal);
@@ -67,7 +68,7 @@ public class ScanInOut implements ActionListener {
         }
         System.out.println(Operation);
         break;
-      case "Back": // Handle back button action
+      case "Back":
         frame.dispose();
         new MainWindow(func);
         break;
@@ -76,7 +77,7 @@ public class ScanInOut implements ActionListener {
   }
 
   public boolean validateInputs() {
-    String RFID = itemInput.getText();
+    String RFID = RFIDtext.getText();
     String storeVal = storeInput.getText();
     String quantityVal = Quantity.getText();
     if (RFID.equals("") || storeVal.equals("") || quantityVal.equals("")) {
@@ -188,6 +189,22 @@ public class ScanInOut implements ActionListener {
     gbc.gridy = 3;
     Quantity = new JTextField(10);
     panel.add(Quantity, gbc);
+
+    itemInput.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        // mandatory implementation but no event required for our app
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        try {
+          RFIDtext.setText(func.getRFIDString(itemInput.getText()));
+        } catch (SQLException ex) {
+          RFIDtext = new JLabel("Item ID not found in database");
+        }
+      }
+    });
 
     gbc.anchor = GridBagConstraints.FIRST_LINE_START;
     gbc.weighty = 1.0;
