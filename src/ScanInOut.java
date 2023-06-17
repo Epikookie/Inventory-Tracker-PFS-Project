@@ -185,7 +185,7 @@ public class ScanInOut implements ActionListener {
     storeInput = new JTextField(10);
     panel.add(storeInput, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 2;
+    gbc.gridy = 3;
     Quantity = new JTextField(10);
     panel.add(Quantity, gbc);
 
