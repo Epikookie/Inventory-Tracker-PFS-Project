@@ -104,7 +104,7 @@ public class ScanInOut implements ActionListener {
 
   public String sanitiseRFID(String RFID) {
     // Ensure RFID is alphanumeric and 40 characters long
-    if (RFID.matches("[a-zA-Z0-9]+") && RFID.length() == 40) {
+    if (RFID.matches("[a-fA-F0-9]+") && RFID.length() == 40) {
       return RFID;
     }
     return "";
@@ -120,16 +120,22 @@ public class ScanInOut implements ActionListener {
   }
 
   public boolean validateQuantity(String quantityVal) {
-    // Check string is numeric
+    // Check if the string is numeric
     if (quantityVal.matches("[0-9]+")) {
-      int quantity = Integer.parseInt(quantityVal);
-      // Check quantity is greater than 0
-      if (quantity > 0) {
-        return true;
-      } else {
+      try {
+        int quantity = Integer.parseInt(quantityVal);
+        if (quantity > 0) {
+          return true;
+        } else {
+          labelThree.setText("Please enter a positive number");
+          return false;
+        }
+      } catch (NumberFormatException e) {
+        labelThree.setText("Please enter a valid quantity");
         return false;
       }
     } else {
+      labelThree.setText("Please enter a number");
       return false;
     }
   }
