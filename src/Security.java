@@ -245,6 +245,7 @@ public class Security {
     public static void Bruteforce() {
         System.out.println("Hello Bruteforce World");
         // TODO: Implement Bruteforce method
+        // TODO: BEN to comment on if we need this
         // check that we dont too many attemps
     }
 
@@ -254,6 +255,7 @@ public class Security {
      */
     public static void preventInfiniteLoop() {
         // TODO: Implement preventInfiniteLoo method
+        // TODO: BEN to comment on if we need this
         System.out.println("Hello Infinite Loop World");
     }
 
@@ -262,6 +264,7 @@ public class Security {
      */
     public static void preventDDOS() {
         // TODO: Implement preventDDOS method
+        // TODO: BEN to comment on if we need this
         System.out.println("Hello DDOS World");
     }
 
