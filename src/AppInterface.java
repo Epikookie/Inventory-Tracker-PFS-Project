@@ -11,6 +11,14 @@ public class AppInterface {
          */
         public static void main(String[] args) {
                 func = new AppFunctions();
+
+                // try {
+                // Thread.sleep(500);
+
+                // } catch (InterruptedException e) {
+                // e.printStackTrace();
+                // }
+
                 func.initialiseDatabase(true); // drops and recreates tables if true
                 func.populateStaff();
                 func.populateSupplier();

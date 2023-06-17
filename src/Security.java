@@ -213,14 +213,17 @@ public class Security {
     /**
      * Update the last login time for the staff member
      * 
-     * @param staffID
-     * @param datetime
-     * @param stmt
+     * @param staffID  int ID of staff member
+     * @param datetime LocalDateTime object of current time
+     * @param stmt     SQL Statement object
      * @return 1 if successful, -1 if unsuccessful, 0 if SQL update returns nothing
      */
-    public static int updateLastLogin(int staffID, LocalDateTime datetime, Statement stmt) {
+    public static int updateLastLogin(int staffID, LocalDateTime datetime, Connection conn) {
         try {
-            return stmt.executeUpdate("UPDATE staff SET lastlogin = " + datetime + " WHERE id = " + staffID + ";");
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE staff SET lastlogin = ? WHERE id = ?");
+            pstmt.setObject(1, datetime);
+            pstmt.setInt(2, staffID);
+            return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error updating last login for staffID: " + staffID);
             e.printStackTrace();

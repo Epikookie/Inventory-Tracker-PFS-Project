@@ -53,7 +53,7 @@ public class Login implements ActionListener {
     if (func.attemptLogin(staffID, password)) {
       labelThree.setText("Login successful. Starting user session...");
       func.session = new Session(staffID);
-      Security.updateLastLogin(func.session.staffID, func.session.loginTime, func.stmt);
+      Security.updateLastLogin(func.session.staffID, func.session.loginTime, func.conn);
       new MainWindow(func);
       frame.dispose();
     } else {
