@@ -7,7 +7,7 @@ Application TODO:
 - Password verification and authentication, utilising bcrypt and salt - DONE
 - Multi-search - DONE
 - JUnit testing for security functions
-- Need to update latest login when user logs in.
+- Need to update latest login when user logs in - DONE
 - Additional Security Features:
 >> Need timout after X incorrect login attempts
 

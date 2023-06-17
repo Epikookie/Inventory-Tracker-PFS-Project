@@ -62,8 +62,6 @@ public class ScanInOut implements ActionListener {
             func.updateLog(func.session.staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
           } else {
             labelThree.setText("Item not scanned out successfully");
-            func.updateLog(func.session.staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
-
           }
         }
         System.out.println(Operation);
