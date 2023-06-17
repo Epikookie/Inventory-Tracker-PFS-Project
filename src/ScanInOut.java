@@ -13,7 +13,7 @@ public class ScanInOut implements ActionListener {
   private JPanel panel;
   private GridBagConstraints gbc = new GridBagConstraints();
 
-  private JLabel labelOne, labelTwo, labelThree, storeLabel;
+  private JLabel labelOne, labelTwo, labelThree, storeLabel, RFIDLabel, RFIDtext;
   private JTextField itemInput, Quantity;
   private JTextField storeInput;
   private JButton buttonOne;
@@ -34,6 +34,7 @@ public class ScanInOut implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    RFIDtext.setText("[TEXT HERE]");
     String Operation = e.getActionCommand();
     switch (Operation) {
       case "Scan In":
@@ -149,15 +150,22 @@ public class ScanInOut implements ActionListener {
     gbc.gridy = 0;
     gbc.weightx = 0.0;
     gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.anchor = GridBagConstraints.LINE_START;
+    RFIDLabel = new JLabel("RFID");
+    panel.add(RFIDLabel, gbc);
 
-    labelOne = new JLabel("RFID:");
-    panel.add(labelOne, gbc);
     gbc.gridx = 0;
     gbc.gridy = 1;
-    labelTwo = new JLabel("Store:");
-    panel.add(labelTwo, gbc);
+    labelOne = new JLabel("Item ID:");
+    panel.add(labelOne, gbc);
+
     gbc.gridx = 0;
     gbc.gridy = 2;
+    labelTwo = new JLabel("Store:");
+    panel.add(labelTwo, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 3;
     storeLabel = new JLabel("Quantity:");
     panel.add(storeLabel, gbc);
 
@@ -166,10 +174,14 @@ public class ScanInOut implements ActionListener {
     gbc.gridy = 0;
     gbc.weightx = 1.0;
     gbc.fill = GridBagConstraints.HORIZONTAL;
+    RFIDtext = new JLabel("Please Enter Item ID");
+    panel.add(RFIDtext, gbc);
+    gbc.gridx = 1;
+    gbc.gridy = 1;
     itemInput = new JTextField(10);
     panel.add(itemInput, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 1;
+    gbc.gridy = 2;
     storeInput = new JTextField(10);
     panel.add(storeInput, gbc);
     gbc.gridx = 1;
