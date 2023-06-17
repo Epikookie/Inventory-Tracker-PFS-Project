@@ -617,16 +617,24 @@ public class AppFunctions {
     public boolean updateLog(int staffid, String rfid, String store, String operation, int quantity,
             LocalDateTime date) {
         try {
+            int itemid = 0, storeid = 0;
 
             ResultSet itemRS = stmt
-                    .executeQuery("SELECT item.id FROM item WHERE item.rfid = '" + rfid + "';");
+                    .executeQuery("SELECT id FROM item WHERE rfid = '" + rfid + "';");
+            while (itemRS.next()) {
+                itemid = itemRS.getInt("id");
+            }
+
             ResultSet storeRS = stmt
-                    .executeQuery("SELECT store.id FROM store WHERE store.name = '" + store + "';");
+                    .executeQuery("SELECT id FROM store WHERE name = '" + store + "';");
+            while (storeRS.next()) {
+                storeid = storeRS.getInt("id");
+            }
 
-            int itemid, storeid;
-
-            itemid = itemRS.getInt("id");
-            storeid = storeRS.getInt("id");
+            if (itemid == 0 || storeid == 0) {
+                System.err.println("Log not updated. Item or store not found");
+                return false;
+            }
 
             stmt.executeUpdate("INSERT INTO inventorylog(staffid, itemid, storeid, operation, quantity, datetime) " +
                     "VALUES (" + staffid + ", " + itemid + ", " + storeid + ", \'" + operation + "\', "
@@ -942,7 +950,14 @@ public class AppFunctions {
             updateStatement.setInt(1, Quantity);
             updateStatement.setInt(2, itemid);
             updateStatement.setInt(3, storeid);
-            updateStatement.executeUpdate();
+            int result = updateStatement.executeUpdate();
+
+            if (result == 0) {
+                // Handle case when item not found in inventory
+                // Use INSERT statement instead
+                return false;
+
+            }
             updateStatement.close();
             System.out.println("Scanned in Sucessfully");
             return true;
