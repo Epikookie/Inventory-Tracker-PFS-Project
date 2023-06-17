@@ -114,7 +114,7 @@ public class ScanInOut implements ActionListener {
 
   public String sanitiseStore(String storeVal) {
     // Ensure store is alphanumeric
-    if (storeVal.matches("[a-zA-Z0-9]+")) {
+    if (storeVal.matches("[a-zA-Z0-9 ]+")) {
       return storeVal;
     }
     return "";
