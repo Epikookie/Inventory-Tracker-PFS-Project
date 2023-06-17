@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 
 // used for password criteria checking
 import java.util.regex.Matcher;
@@ -208,6 +209,29 @@ public class Security {
         String hashedPassword = Security.generateSHA256Hash(password + salt);
         return hashedPassword.equals(hash);
     }
+
+    /**
+     * Update the last login time for the staff member
+     * 
+     * @param staffID
+     * @param datetime
+     * @param stmt
+     * @return 1 if successful, -1 if unsuccessful, 0 if SQL update returns nothing
+     */
+    public static int updateLastLogin(int staffID, LocalDateTime datetime, Statement stmt) {
+        try {
+            return stmt.executeUpdate("UPDATE staff SET lastlogin = " + datetime + " WHERE id = " + staffID + ";");
+        } catch (SQLException e) {
+            System.err.println("Error updating last login for staffID: " + staffID);
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * Begin an authenticated user session by pulling the staff details from the
+     * database and returning them an
+     */
 
     /** Test that valid password function works */
     public static void testValidPassword() {

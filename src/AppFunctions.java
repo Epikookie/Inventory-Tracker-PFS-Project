@@ -12,6 +12,8 @@ public class AppFunctions {
 
     // Constant JTable column names
     String[] COL_NAMES = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
+
+    // User session - populated when user logs in
     Session session;
 
     // ----------------------------------------------------------------------------------------------------
@@ -578,7 +580,7 @@ public class AppFunctions {
         String salt = hashAndSalt[1];
 
         if (Security.correctPassword(password, salt, hash)) {
-            System.out.println("Login successful");
+            System.out.println("Authenticated");
             return true;
         } else {
             System.err.println("Incorrect password");

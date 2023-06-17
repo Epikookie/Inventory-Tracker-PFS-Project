@@ -51,8 +51,9 @@ public class Login implements ActionListener {
     String password = String.valueOf(passwordInput.getPassword());
 
     if (func.attemptLogin(staffID, password)) {
-      labelThree.setText("Login successful. Loading...");
+      labelThree.setText("Login successful. Starting user session...");
       func.session = new Session(staffID);
+      Security.updateLastLogin(func.session.staffID, func.session.loginTime, func.stmt);
       new MainWindow(func);
       frame.dispose();
     } else {
