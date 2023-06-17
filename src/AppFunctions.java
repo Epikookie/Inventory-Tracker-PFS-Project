@@ -12,6 +12,7 @@ public class AppFunctions {
 
     // Constant JTable column names
     String[] COL_NAMES = { "ItemID", "Item", "Store", "Quantity", "Summary", "Supplier" };
+    Session session;
 
     // ----------------------------------------------------------------------------------------------------
     // CONSTRUCTOR
