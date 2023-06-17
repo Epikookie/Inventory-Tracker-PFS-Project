@@ -195,7 +195,7 @@ public class AppFunctions {
                                 staffid INTEGER NOT NULL,
                                 itemid INTEGER NOT NULL,
                                 storeid INTEGER NOT NULL,
-                                operation VARCHAR(3) NOT NULL,
+                                operation VARCHAR(10) NOT NULL,
                                 quantity INTEGER NOT NULL,
                                 datetime datetime DEFAULT NULL)
                                 """);
