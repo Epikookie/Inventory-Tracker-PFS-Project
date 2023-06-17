@@ -21,7 +21,7 @@ public class MainWindow implements ActionListener {
   private JScrollPane tableScrollPane;
   private JTable table;
   private GridBagConstraints gbc = new GridBagConstraints();
-  private AppFunctions func = new AppFunctions();
+  public AppFunctions func = new AppFunctions();
 
   public MainWindow(AppFunctions func) {
     this.func = func;

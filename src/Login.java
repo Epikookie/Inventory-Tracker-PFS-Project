@@ -22,7 +22,7 @@ public class Login implements ActionListener {
   private JTextField userInput;
   private JPasswordField passwordInput;
   private JButton buttonOne;
-  private AppFunctions func;
+  public AppFunctions func;
 
   /**
    * Constructor, initializes frame and panel objects

@@ -18,7 +18,7 @@ public class ScanInOut implements ActionListener {
   private JTextField storeInput;
   private JButton buttonOne;
   private JButton backButton; // Added back button
-  private AppFunctions func;
+  public AppFunctions func;
 
   public ScanInOut(AppFunctions func) {
     this.func = func;
@@ -35,8 +35,6 @@ public class ScanInOut implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     String Operation = e.getActionCommand();
-    // ! Get staff ID from login
-    int staffID = 1;
     switch (Operation) {
       case "Scan In":
         if (validateInputs()) {
@@ -46,6 +44,7 @@ public class ScanInOut implements ActionListener {
           int quantity = Integer.parseInt(quantityVal);
           if (func.scanIn(RFID, quantity, storeVal)) {
             labelThree.setText("Item scanned in successfully");
+            func.updateLog(func.session.staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
           } else {
             labelThree.setText("Item not scanned in successfully");
           }
@@ -60,10 +59,10 @@ public class ScanInOut implements ActionListener {
           int quantity = Integer.parseInt(quantityVal);
           if (func.scanOut(RFID, quantity, storeVal)) {
             labelThree.setText("Item scanned out successfully");
-            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
+            func.updateLog(func.session.staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
           } else {
             labelThree.setText("Item not scanned out successfully");
-            func.updateLog(staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
+            func.updateLog(func.session.staffID, RFID, storeVal, Operation, quantity, LocalDateTime.now());
 
           }
         }
