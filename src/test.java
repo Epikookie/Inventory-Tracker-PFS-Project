@@ -20,6 +20,10 @@ public class test {
         System.out.println(Arrays.equals(newer, currentRows.get(0)));
         System.out.println(newer.equals(currentRows.get(0)));
 
+        int quantity = 100;
+        int lownum = Math.floorDiv(quantity, 10);
+        System.out.println(lownum);
+
     }
 
 }

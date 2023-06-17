@@ -953,12 +953,21 @@ public class AppFunctions {
             int result = updateStatement.executeUpdate();
 
             if (result == 0) {
-                // Handle case when item not found in inventory
-                // Use INSERT statement instead
-                return false;
-
+                // No entry in inventory, adding new entry
+                int lownum = Quantity / 10;
+                PreparedStatement insertStatement = conn
+                        .prepareStatement(
+                                "INSERT INTO inventory(itemid, storeid, instock, lownum) VALUES (?, ?, ?, ?)");
+                insertStatement.setInt(1, itemid);
+                insertStatement.setInt(2, storeid);
+                insertStatement.setInt(3, Quantity);
+                insertStatement.setInt(4, lownum);
+                insertStatement.executeUpdate();
+                insertStatement.close();
+            } else {
+                updateStatement.close();
             }
-            updateStatement.close();
+
             System.out.println("Scanned in Sucessfully");
             return true;
         } catch (SQLException e) {
