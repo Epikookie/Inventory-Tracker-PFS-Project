@@ -207,7 +207,10 @@ public class AppFunctions {
                                 storeid INTEGER NOT NULL,
                                 operation VARCHAR(10) NOT NULL,
                                 quantity INTEGER NOT NULL,
-                                datetime datetime DEFAULT NULL)
+                                datetime datetime DEFAULT NULL,
+                                CONSTRAINT fk_il_staffid FOREIGN KEY (staffid) REFERENCES staff (id),
+                                CONSTRAINT fk_il_itemid FOREIGN KEY (itemid) REFERENCES item (id),
+                                CONSTRAINT fk_il_storeid FOREIGN KEY (storeid) REFERENCES store (id) ON DELETE CASCADE ON UPDATE CASCADE)
                                 """);
 
             stmt.executeBatch();

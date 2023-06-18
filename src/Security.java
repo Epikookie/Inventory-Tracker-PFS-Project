@@ -312,7 +312,8 @@ public class Security {
         long secondsSinceLast = Math.abs(timeSinceLast.getSeconds());
 
         if (secondsSinceLast < 10) {
-            throw new RuntimeException("You can only log in once every 30 seconds. Please try again later.");
+            throw new RuntimeException(
+                    "SECURITY: You will be able to log in in " + (10 - secondsSinceLast) + " seconds.");
         }
     }
 
