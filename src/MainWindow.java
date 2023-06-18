@@ -46,7 +46,6 @@ public class MainWindow implements ActionListener {
     String Operation = e.getActionCommand();
     switch (Operation) {
       case "Scan In/Out":
-        System.out.println(Operation);
         new ScanInOut(func);
         frame.dispose();
         break;
@@ -63,7 +62,6 @@ public class MainWindow implements ActionListener {
    * Search for inventory items based on user inputs
    */
   public void search() {
-    System.out.println("Search");
     JTable resultTable;
     resultTable = runQuery();
     refreshView(resultTable);
@@ -75,7 +73,6 @@ public class MainWindow implements ActionListener {
    * @return
    */
   public void signOut() {
-    System.out.println("Sign Out");
     new Login(func);
     frame.dispose();
   }
@@ -208,8 +205,6 @@ public class MainWindow implements ActionListener {
   }
 
   private void refreshView(JTable resultTable) {
-    int rowCount = resultTable.getRowCount();
-    System.out.println("Number of rows: " + rowCount);
     tableScrollPane.setViewportView(resultTable);
     tableScrollPane.repaint();
     tableScrollPane.revalidate();

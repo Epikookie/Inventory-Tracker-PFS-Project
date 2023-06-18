@@ -870,7 +870,6 @@ public class AppFunctions {
         while (rs.next()) {
             for (int i = 1; i <= COL_NAMES.length; i++) {
                 data[currentRow][i - 1] = rs.getString(i);
-                System.out.println(i);
             }
             currentRow++;
         }
@@ -908,7 +907,6 @@ public class AppFunctions {
         while (rs.next()) {
             for (int i = 1; i <= 9; i++) {
                 data[currentRow][i - 1] = rs.getString(i);
-                System.out.println(i);
             }
             currentRow++;
         }
