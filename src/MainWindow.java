@@ -91,6 +91,11 @@ public class MainWindow implements ActionListener {
     String supplierString = supplierField.getText();
     boolean lowStock = toggleButton.isSelected();
 
+    // Sanitise the input strings
+    itemString = sanitiseString(itemString);
+    storeString = sanitiseString(storeString);
+    supplierString = sanitiseString(supplierString);
+
     // If no search parameters are entered, return all inventory
     if (itemString.isBlank() && storeString.isBlank() && supplierString.isBlank()) {
       return func.allInventory(lowStock);
@@ -113,6 +118,19 @@ public class MainWindow implements ActionListener {
       return results.get(0);
     } else {
       return getCommonRows(results);
+    }
+  }
+
+  /**
+   * Returns the input string if it is alphanumeric (with spaces) and less than 50
+   * characters
+   * Otherwise returns an empty string
+   */
+  private String sanitiseString(String inString) {
+    if (inString.matches("[a-zA-Z0-9\\s]+") && inString.length() < 50) {
+      return inString;
+    } else {
+      return "";
     }
   }
 
