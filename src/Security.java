@@ -166,7 +166,7 @@ public class Security {
     public static boolean validPassword(String password) {
         // Minimum 12 characters, at least 1 lowercase letter, 1 uppercase letter, 1
         // number, and 1 special character
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=\\S+$).{12,100}$";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
