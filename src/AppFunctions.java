@@ -15,6 +15,7 @@ public class AppFunctions {
 
     // User session - populated when user logs in
     Session session;
+    LocalDateTime datetime;
 
     // ----------------------------------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -24,7 +25,16 @@ public class AppFunctions {
      * Constructs a new AppFunctions object
      */
     public AppFunctions() {
+        updateDatetime();
         initialiseConnection();
+    }
+
+    /**
+     * Updates the datetime variable to the current time. This is used to prevent
+     * bruteforce attacks.
+     */
+    public void updateDatetime() {
+        this.datetime = LocalDateTime.now();
     }
 
     /**
@@ -546,7 +556,9 @@ public class AppFunctions {
      * @param password
      * @return true if successful, false if not
      */
-    public boolean attemptLogin(String staffID, String password) {
+    public boolean attemptLogin(String staffID, String password, AppFunctions func) {
+
+        Security.preventBruteForce(datetime, func);
 
         if (!Security.validStaffID(staffID, stmt)) {
             System.err.println("Staff ID invalid");
@@ -1045,90 +1057,6 @@ public class AppFunctions {
             System.out.println("Error scanning out");
             System.err.print(e.getMessage());
             return false;
-        }
-    }
-
-    // ! Old methods
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Edit the information for the student with the given id in the database, any
-     * parameters which
-     * are null are not changed
-     * 
-     * @param id
-     * @param firstName
-     * @param lastName
-     * @param dob
-     * @param yearGroup
-     * @param contactDetails
-     * @return true if the edit was successful, false otherwise
-     */
-    public void editStudent(int id, String firstName, String lastName, String dob, String yearGroup,
-            String contactDetails) {
-        // initialise str query
-        String str = "UPDATE STUDENTS SET ";
-        boolean first = true;
-
-        // add firstName update
-        if (firstName != null) {
-            str += "firstname=\'" + firstName + "\'";
-            first = false;
-        }
-
-        // add lastName update
-        if (lastName != null) {
-            if (!first)
-                str += ", ";
-            str += "lastname=\'" + lastName + "\'";
-            first = false;
-        }
-
-        // add dob update
-        if (dob != null) {
-            if (!first)
-                str += ", ";
-            str += "dob=\'" + dob + "\'";
-            first = false;
-        }
-
-        // add yearGroup update
-        if (yearGroup != null) {
-            if (!first)
-                str += ", ";
-            str += "yearGroup=\'" + yearGroup + "\'";
-            first = false;
-        }
-
-        // add contactDetails update
-        if (contactDetails != null) {
-            if (!first)
-                str += ", ";
-            str += "contactDetails=\'" + contactDetails + "\'";
-        }
-
-        try {
-            stmt.executeUpdate(str + " WHERE id=" + id + ";");
-
-        } catch (SQLException e) {
-            System.err.print(e.getMessage());
-        }
-    }
-
-    // ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Deletes the student with the specified id from the database
-     * 
-     * @param id
-     * @return true if the deletion was successful, false otherwise
-     */
-    public void deleteStudent(int id) {
-        try {
-            stmt.executeUpdate("DELETE FROM STUDENTS WHERE id=" + id + "\';");
-
-        } catch (SQLException e) {
-            System.err.print(e.getMessage());
         }
     }
 

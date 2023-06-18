@@ -50,7 +50,7 @@ public class Login implements ActionListener {
     String staffID = userInput.getText();
     String password = String.valueOf(passwordInput.getPassword());
 
-    if (func.attemptLogin(staffID, password)) {
+    if (func.attemptLogin(staffID, password, func)) {
       labelThree.setText("Login successful. Starting user session...");
       func.session = new Session(staffID);
       Security.updateLastLogin(func.session.staffID, func.session.loginTime, func.conn);

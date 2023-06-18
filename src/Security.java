@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 // used for password criteria checking
@@ -269,30 +270,26 @@ public class Security {
         }
     }
 
-    public static void Bruteforce() {
-        System.out.println("Hello Bruteforce World");
-        // TODO: Implement Bruteforce method
-        // TODO: BEN to comment on if we need this
-        // check that we dont too many attemps
-    }
-
     /**
-     * Make sure the server times out after a while after running a query or if no
-     * new commands are issued
+     * Prevent brute force attack by sleeping for 2 seconds if the last login was
+     * less than 2 seconds ago
+     * 
+     * @param datetime LocalDateTime object of last login time pulled from
+     *                 AppFunctions
      */
-    public static void preventInfiniteLoop() {
-        // TODO: Implement preventInfiniteLoo method
-        // TODO: BEN to comment on if we need this
-        System.out.println("Hello Infinite Loop World");
-    }
+    public static void preventBruteForce(LocalDateTime datetime, AppFunctions func) {
+        Duration timeSinceLast = Duration.between(datetime, LocalDateTime.now());
+        long secondsSinceLast = Math.abs(timeSinceLast.getSeconds());
 
-    /**
-     * Limit amount of user requests to sever within a certain time frame
-     */
-    public static void preventDDOS() {
-        // TODO: Implement preventDDOS method
-        // TODO: BEN to comment on if we need this
-        System.out.println("Hello DDOS World");
+        if (secondsSinceLast < 1) {
+            try {
+                Thread.sleep(1000 - secondsSinceLast);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        func.updateDatetime();
     }
 
 }
