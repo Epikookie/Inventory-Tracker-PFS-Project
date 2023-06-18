@@ -570,7 +570,7 @@ public class AppFunctions {
 
         if (!Security.validPassword(password)) {
             System.err.println(
-                    "Password must be minimum 12 characters, at least 1 lowerand uppercase letter, number, and special character, and no spaces");
+                    "Password must be between 12-100 characters with no spaces and contain at least 1 lower and uppercase letter, number, and special character.");
             System.err.println("Password invalid");
             return false;
         }
