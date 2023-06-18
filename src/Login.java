@@ -13,7 +13,6 @@ public class Login implements ActionListener {
    * Border constants for GUI panel
    */
   private int dimensionX = 400, dimensionY = 250;
-  private static int TOP = 10, BOTTOM = 10, LEFT = 10, RIGHT = 10;
   private JFrame frame;
   private JPanel panel;
   private GridBagConstraints gbc = new GridBagConstraints();

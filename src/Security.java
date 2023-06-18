@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 // used for password criteria checking
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
