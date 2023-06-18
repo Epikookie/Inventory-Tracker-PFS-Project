@@ -592,6 +592,18 @@ public class AppFunctions {
         String salt = hashAndSalt[1];
 
         if (Security.correctPassword(password, salt, hash)) {
+
+            // Prevent DDoS by making sure hasn't logged in within last 30 seconds
+            try {
+                Security.limitLogins(staffIDint, stmt);
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                return false;
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                return false;
+            }
+
             System.out.println("Authenticated");
             return true;
         } else {

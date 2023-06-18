@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
-
+import java.time.format.DateTimeFormatter;
 // used for password criteria checking
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -290,6 +290,30 @@ public class Security {
         }
 
         func.updateDatetime();
+    }
+
+    /**
+     * Limit user log ins to at most once every 10 seconds
+     * 
+     * @param staffID int ID of staff member
+     * @param stmt    SQL Statement object
+     */
+    public static void limitLogins(int staffID, Statement stmt) throws SQLException {
+
+        LocalDateTime lastLogin = null;
+        ResultSet rs = stmt.executeQuery("SELECT lastlogin FROM staff WHERE id = '" + staffID + "'");
+
+        while (rs.next()) {
+            String lastLoginString = rs.getString("lastlogin");
+            lastLogin = LocalDateTime.parse(lastLoginString);
+        }
+
+        Duration timeSinceLast = Duration.between(lastLogin, LocalDateTime.now());
+        long secondsSinceLast = Math.abs(timeSinceLast.getSeconds());
+
+        if (secondsSinceLast < 10) {
+            throw new RuntimeException("You can only log in once every 30 seconds. Please try again later.");
+        }
     }
 
 }
